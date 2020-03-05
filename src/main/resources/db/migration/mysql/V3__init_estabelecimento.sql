@@ -1,0 +1,1 @@
+ INSERT INTO estabelecimento (id, nome, gestor_id) VALUES (NULL, 'Lanchonete Maida', 1);

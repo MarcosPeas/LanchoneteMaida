@@ -37,6 +37,6 @@ public class Usuario {
 	private Perfil perfil;
 
 	public enum Perfil {
-		ADMIN, GESTOR, CLIENTE
+		ROLE_ADMIN, ROLE_GESTOR, ROLE_CLIENTE
 	}
 }
