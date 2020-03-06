@@ -18,10 +18,6 @@ public class PedidoDao implements IPedidoService {
 	@Autowired
 	private PedidoRepository rep;
 
-	public void salvar(Pedido pedido) {
-		rep.save(pedido);
-	}
-	
 	public Optional<Pedido> buscarPorId(int id) {
 		return rep.findById(id);
 	}
@@ -50,5 +46,21 @@ public class PedidoDao implements IPedidoService {
 
 	public void deletar(int id) {
 		rep.deleteById(id);
+	}
+
+	@Override
+	public Pedido salvar(Pedido pedido) {
+		return rep.save(pedido);
+	}
+
+	@Override
+	public Pedido alterarStatus(int pedidoId, Pedido.StatusPedido status) {
+		Optional<Pedido> optional = buscarPorId(pedidoId);
+		if (optional.isPresent()) {
+			Pedido pedido = optional.get();
+			pedido.setStatus(status);
+			return (salvar(pedido));
+		}
+		return null;
 	}
 }
