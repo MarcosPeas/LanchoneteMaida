@@ -1,4 +1,4 @@
-package com.lanchonete.maida;
+package com.lanchonete.maida.dao;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,11 +11,11 @@ import com.lanchonete.maida.repository.UsuarioRepository;
 import com.lanchonete.maida.service.IUsuarioService;
 
 @Service
-public class UsuarioDao implements IUsuarioService{
+public class UsuarioDao implements IUsuarioService {
 
 	@Autowired
 	private UsuarioRepository repository;
-	
+
 	@Override
 	public Optional<Usuario> buscarPorEmail(String email) {
 		return repository.findByEmail(email);
@@ -35,5 +35,10 @@ public class UsuarioDao implements IUsuarioService{
 	public List<Usuario> listar() {
 		return repository.findAll();
 	}
-	
+
+	@Override
+	public void deletar(int id) {
+		repository.deleteById(id);
+	}
+
 }
