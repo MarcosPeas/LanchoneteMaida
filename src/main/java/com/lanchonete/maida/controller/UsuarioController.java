@@ -24,7 +24,7 @@ import com.lanchonete.maida.service.IUsuarioService;
 public class UsuarioController {
 
 	@Autowired
-	IUsuarioService dao;
+	private IUsuarioService dao;
 
 	@PostMapping
 	public ResponseEntity<Response<Integer>> salvar(@RequestBody Usuario usuario) {
@@ -47,7 +47,7 @@ public class UsuarioController {
 	public List<Usuario> listar() {
 		return dao.listar();
 	}
-	
+
 	@DeleteMapping(value = "{/id}")
 	public void deletar(@PathVariable int id) {
 		dao.deletar(id);
