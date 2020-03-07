@@ -1,7 +1,5 @@
 package com.lanchonete.maida;
 
-import java.time.LocalDateTime;
-
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -23,9 +21,6 @@ public class LanchoneteMaidaApplication implements WebMvcConfigurer {
 
 		return a -> {
 			System.out.println("Inciou...");
-			LocalDateTime data = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0);
-
-			System.out.println(data);
 		};
 	}
 
