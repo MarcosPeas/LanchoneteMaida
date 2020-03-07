@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity.BodyBuilder;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -33,6 +34,7 @@ public class PedidoController {
 	private IPedidoService dao;
 
 	@PostMapping
+	@PreAuthorize("hasAnyRole('CLIENTE')")
 	public ResponseEntity<Response<Pedido>> salvar(@RequestBody Pedido pedido) {
 		Response<Pedido> response = Response.of(dao.salvar(pedido));
 		return new ResponseEntity<Response<Pedido>>(response, HttpStatus.CREATED);
@@ -90,6 +92,7 @@ public class PedidoController {
 
 	/* SISTEMA DE FILA DE PEDIDOS */
 	@GetMapping(value = "/fila/{id}")
+	@PreAuthorize("hasAnyRole('CLIENTE')")
 	public Response<FilaPedidoInfo> filaPedidos(@PathVariable int id) {
 		List<StatusPedido> statusList = Arrays.asList(StatusPedido.SOLICITADO, StatusPedido.RECEBIDO,
 				StatusPedido.EM_PREPARO);

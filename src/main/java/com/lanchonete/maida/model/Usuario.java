@@ -29,7 +29,7 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Usuario {
+public class Usuario  {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,7 +54,7 @@ public class Usuario {
 
 	@Enumerated(EnumType.STRING)
 	private Perfil perfil;
-	
+
 	@PrePersist
 	private void encriptarSenha() {
 		senha = SenhaUtil.encriptarSenha(senha);

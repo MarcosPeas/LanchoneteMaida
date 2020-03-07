@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +31,7 @@ public class ProdutoController {
 	// PARA GESTOR
 
 	@PostMapping
+	@PreAuthorize("hasAnyRole('GESTOR')")
 	public ResponseEntity<Response<Integer>> salvar(@RequestBody Produto produto) {
 		dao.salvar(produto);
 		Response<Integer> response = Response.of(produto.getId());
@@ -37,21 +39,25 @@ public class ProdutoController {
 	}
 
 	@PutMapping
+	@PreAuthorize("hasAnyRole('GESTOR')")
 	public void atualizar(Produto produto) {
 		dao.salvar(produto);
 	}
 
 	@DeleteMapping(value = "/{id}")
+	@PreAuthorize("hasAnyRole('GESTOR')")
 	public void deletar(@PathVariable int id) {
 		dao.deletar(id);
 	}
 
 	@GetMapping(value = "/gestor/{id}")
+	@PreAuthorize("hasAnyRole('GESTOR')")
 	public Response<Optional<Produto>> buscarPorId(@PathVariable int id) {
 		return Response.of(dao.buscarPorId(id));
 	}
 
 	@GetMapping(value = "/gestor/like/{nome}")
+	@PreAuthorize("hasAnyRole('GESTOR')")
 	public Response<List<Produto>> buscarPorParteNome(@PathVariable String nome) {
 		return Response.of(dao.buscarPorParteNome(nome));
 	}

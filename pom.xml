@@ -40,10 +40,15 @@
 			<artifactId>flyway-core</artifactId>
 		</dependency>
 
-
+		<!-- Autenticação e Autorização -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.7.0</version>
 		</dependency>
 
 		<dependency>
