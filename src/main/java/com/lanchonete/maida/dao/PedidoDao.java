@@ -1,5 +1,6 @@
 package com.lanchonete.maida.dao;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,6 +46,7 @@ public class PedidoDao implements IPedidoService {
 	}
 
 	public void deletar(int id) {
+		// verificar se o pedido pode ser deletado
 		rep.deleteById(id);
 	}
 
@@ -54,13 +56,33 @@ public class PedidoDao implements IPedidoService {
 	}
 
 	@Override
-	public Pedido alterarStatus(int pedidoId, Pedido.StatusPedido status) {
-		Optional<Pedido> optional = buscarPorId(pedidoId);
+	public Pedido alterarStatus(Pedido pedido) {
+		// Verificar se o pedido pode ser alterado
+		return salvar(pedido);
+	}
+
+	@Override
+	public Optional<Pedido> buscarPorIdECliente(int id, int idCliente) {
+		return rep.findByIdAndCliente(id, new Usuario(idCliente, null, null, null, null, null, null));
+	}
+
+	@Override
+	public List<Pedido> buscarPedidosFila(List<StatusPedido> status, int idPedido) {
+		Optional<Pedido> optional = buscarPorId(idPedido);
 		if (optional.isPresent()) {
-			Pedido pedido = optional.get();
-			pedido.setStatus(status);
-			return (salvar(pedido));
+			return rep.findByStatusInAndHorarioPedidoLessThanEqualOrderByHorarioPedidoDesc(status,
+					optional.get().getHorarioPedido());
 		}
 		return null;
+	}
+
+	@Override
+	public List<Pedido> buscarPorDataMaiorOuIgual(LocalDateTime data, List<StatusPedido> statusList) {
+		return rep.findByHorarioEntregueGreaterThanEqualAndStatusInOrderByHorarioEntregueDesc(data, statusList);
+	}
+
+	@Override
+	public List<Pedido> buscarEntreDatas(LocalDateTime inicio, LocalDateTime fim, List<StatusPedido> statusList) {
+		return rep.findByHorarioEntregueBetweenAndStatusInOrderByHorarioEntregueDesc(inicio, fim, statusList);
 	}
 }

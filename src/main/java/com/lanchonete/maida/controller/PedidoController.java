@@ -1,10 +1,14 @@
 package com.lanchonete.maida.controller;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.BodyBuilder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,9 +23,10 @@ import com.lanchonete.maida.model.Pedido;
 import com.lanchonete.maida.model.Pedido.StatusPedido;
 import com.lanchonete.maida.response.Response;
 import com.lanchonete.maida.service.IPedidoService;
+import com.lanchonete.maida.util.FilaPedidoInfo;
 
 @RestController
-@RequestMapping(name = "/v1/pedidos")
+@RequestMapping("/v1/pedidos")
 public class PedidoController {
 
 	@Autowired
@@ -33,19 +38,24 @@ public class PedidoController {
 		return new ResponseEntity<Response<Pedido>>(response, HttpStatus.CREATED);
 	}
 
+	@GetMapping(value = "/{id}")
+	public Response<Optional<Pedido>> buscarPorId(@PathVariable int id) {
+		return Response.of(dao.buscarPorId(id));
+	}
+
+	@GetMapping(value = "/{id}/cliente/{idCliente}")
+	public Response<Optional<Pedido>> buscarPorIdECliente(@PathVariable int id, @PathVariable int idCliente) {
+		return Response.of(dao.buscarPorIdECliente(id, idCliente));
+	}
+
 	@PutMapping
 	public Response<Pedido> alterar(@RequestBody Pedido pedido) {
 		return Response.of(dao.salvar(pedido));
 	}
 
-	@PatchMapping(value = "/{id}/{status}")
-	public ResponseEntity<Response<Object>> alterarStatus(@PathVariable int id, @PathVariable String status) {
-		try {
-			StatusPedido nStatus = StatusPedido.valueOf(status);
-			return ResponseEntity.ok(Response.of(dao.alterarStatus(id, nStatus)));
-		} catch (Exception e) {
-			return ResponseEntity.badRequest().body(Response.erro("Status inválido"));
-		}
+	@PatchMapping
+	public ResponseEntity<Response<Object>> alterarStatus(@RequestBody Pedido pedido) {
+		return ResponseEntity.ok(Response.of(dao.alterarStatus(pedido)));
 	}
 
 	@GetMapping(value = "/{idCliente}/{status}")
@@ -58,16 +68,38 @@ public class PedidoController {
 	@GetMapping(value = "/{idCliente}/list/")
 	public ResponseEntity<Response<Object>> buscarPorClienteEEstatus(@PathVariable int idCliente,
 			@RequestParam List<StatusPedido> status) {
-		System.out.println("Chamado...");
 		List<Pedido> list = dao.buscarPorClienteEStatus(idCliente, status);
 		return ResponseEntity.ok(Response.of(list));
 	}
 
-	// void mostar() {
-	/*
-	 * dao.buscarPorClienteEStatus(clientId, status); ****
-	 * dao.buscarPorClienteEStatus(clientId, status); dao.buscarPorStatus(status);
-	 */
-	// }
+	@GetMapping(value = "/status/{status}")
+	public Response<List<Pedido>> buscarPorStatus(@RequestParam StatusPedido status) {
+		return Response.of(dao.buscarPorStatus(status));
+	}
+
+	@GetMapping(value = "/status/list")
+	public Response<List<Pedido>> buscarPorStatus(@RequestParam List<StatusPedido> status) {
+		return Response.of(dao.buscarPorStatus(status));
+	}
+
+	@DeleteMapping(value = "/{id}")
+	public BodyBuilder deletar(@PathVariable int id) {
+		dao.deletar(id);
+		return ResponseEntity.status(HttpStatus.NO_CONTENT);
+	}
+
+	/* SISTEMA DE FILA DE PEDIDOS */
+	@GetMapping(value = "/fila/{id}")
+	public Response<FilaPedidoInfo> filaPedidos(@PathVariable int id) {
+		List<StatusPedido> statusList = Arrays.asList(StatusPedido.SOLICITADO, StatusPedido.RECEBIDO,
+				StatusPedido.EM_PREPARO);
+
+		List<Pedido> pedidos = dao.buscarPedidosFila(statusList, id);
+
+		FilaPedidoInfo filaInfo = new FilaPedidoInfo();
+		filaInfo.setPedidos(pedidos);
+
+		return Response.of(filaInfo);
+	}
 
 }

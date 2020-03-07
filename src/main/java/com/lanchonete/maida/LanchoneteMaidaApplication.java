@@ -1,24 +1,18 @@
 package com.lanchonete.maida;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.Bean;
-
-import com.lanchonete.maida.model.Produto;
-import com.lanchonete.maida.service.IProdutoService;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 @EnableAutoConfiguration(exclude = { SecurityAutoConfiguration.class })
-public class LanchoneteMaidaApplication {
-
-	@Autowired
-	private IProdutoService dao;
+public class LanchoneteMaidaApplication implements WebMvcConfigurer {
 
 	public static void main(String[] args) {
 		SpringApplication.run(LanchoneteMaidaApplication.class, args);
@@ -27,16 +21,11 @@ public class LanchoneteMaidaApplication {
 	@Bean
 	public CommandLineRunner commandLineRunner() {
 
-		return new CommandLineRunner() {
+		return a -> {
+			System.out.println("Inciou...");
+			LocalDateTime data = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0);
 
-			@Override
-			public void run(String... args) throws Exception {
-				List<Produto> list = dao.clienteListar();
-				System.out.println(list.size() + "\n");
-				list.forEach(p -> {
-					System.out.println(p);
-				});
-			}
+			System.out.println(data);
 		};
 	}
 
