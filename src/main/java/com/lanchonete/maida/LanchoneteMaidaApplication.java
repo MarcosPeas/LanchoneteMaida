@@ -27,16 +27,16 @@ public class LanchoneteMaidaApplication implements WebMvcConfigurer {
 	public CommandLineRunner commandLineRunner() {
 
 		return a -> {
-			System.out.println("Inciou...");
-			System.out.println("localhost:8080/swagger-ui.html");
+			/**/System.out.println("Inciou...");
+			/*System.out.println("localhost:8080/swagger-ui.html");
 
 			Usuario u = new Usuario();
 			u.setEmail("maria.clara@gmail.com");
 			u.setPerfil(Usuario.Perfil.ROLE_CLIENTE);
 
-			String token = jwtTokenUtil.obterToken(new JwtUsuario(u));
+			String token = jwtTokenUtil.gerarTokenDeRecuperacaoDeSenha("peas.shadow@gmail.com");
 
-			System.out.println(token);
+			System.out.println(token);*/
 
 		};
 	}

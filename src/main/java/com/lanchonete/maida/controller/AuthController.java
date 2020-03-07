@@ -27,7 +27,8 @@ import com.lanchonete.maida.model.Usuario;
 import com.lanchonete.maida.response.Response;
 import com.lanchonete.maida.security.JwtTokenUtil;
 import com.lanchonete.maida.security.TokenDto;
-
+import com.lanchonete.maida.service.IUsuarioService;
+import com.lanchonete.maida.util.SenhaUtil;
 
 @RestController
 @RequestMapping("/auth")
@@ -46,6 +47,9 @@ public class AuthController {
 
 	@Autowired
 	private UserDetailsService userDetailsService;
+	
+	@Autowired
+	private IUsuarioService service;
 
 	/**
 	 * Gera e retorna um novo token JWT.
@@ -56,8 +60,8 @@ public class AuthController {
 	 * @throws AuthenticationException
 	 */
 	@PostMapping
-	public ResponseEntity<Response<TokenDto>> gerarTokenJwt(@Valid @RequestBody Usuario usuario,
-			BindingResult result) throws AuthenticationException {
+	public ResponseEntity<Response<TokenDto>> gerarTokenJwt(@Valid @RequestBody Usuario usuario, BindingResult result)
+			throws AuthenticationException {
 		Response<TokenDto> response = Response.erro();
 
 		if (result.hasErrors()) {
@@ -65,10 +69,21 @@ public class AuthController {
 			result.getAllErrors().forEach(error -> response.getErros().add(error.getDefaultMessage()));
 			return ResponseEntity.badRequest().body(response);
 		}
+		
+		Optional<Usuario> optional = service.buscarPorEmail(usuario.getEmail());
+		if(optional.isEmpty()) {
+			response.getErros().add("Usuário não encontrado");
+			return ResponseEntity.badRequest().body(response);
+		}
+		String senhaEncrip = optional.get().getSenha();
+		if(!SenhaUtil.validarSenha(usuario.getSenha(), senhaEncrip)) {
+			response.getErros().add("Senha incorreta");
+			return ResponseEntity.badRequest().body(response);
+		}
 
 		log.info("Gerando token para o email {}.", usuario.getEmail());
-		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(usuario.getEmail(), usuario.getSenha()));
+		Authentication authentication = authenticationManager
+				.authenticate(new UsernamePasswordAuthenticationToken(usuario.getEmail(), usuario.getSenha()));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 
 		UserDetails userDetails = userDetailsService.loadUserByUsername(usuario.getEmail());

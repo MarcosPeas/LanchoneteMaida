@@ -25,6 +25,9 @@ public class JwtTokenUtil {
 	@Value("${jwt.timeout}")
 	private Long expiration;
 
+	@Value("${jwt.timeoutLinkPass}")
+	private Long expirationLinkPass;
+
 	/**
 	 * Obtém o username (email) contido no token JWT.
 	 * 
@@ -70,7 +73,7 @@ public class JwtTokenUtil {
 		try {
 			Claims claims = getClaimsFromToken(token);
 			claims.put(CLAIM_KEY_CREATED, new Date());
-			refreshedToken = gerarToken(claims);
+			refreshedToken = gerarToken(claims, expiration);
 		} catch (Exception e) {
 			refreshedToken = null;
 		}
@@ -98,7 +101,7 @@ public class JwtTokenUtil {
 		claims.put(CLAIM_KEY_USERNAME, userDetails.getUsername());
 		userDetails.getAuthorities().forEach(authority -> claims.put(CLAIM_KEY_ROLE, authority.getAuthority()));
 		claims.put(CLAIM_KEY_CREATED, new Date());
-		return gerarToken(claims);
+		return gerarToken(claims, expiration);
 	}
 
 	/**
@@ -123,8 +126,8 @@ public class JwtTokenUtil {
 	 * 
 	 * @return Date
 	 */
-	private Date gerarDataExpiracao() {
-		return new Date(System.currentTimeMillis() + expiration * 1000);
+	private Date gerarDataExpiracao(long p) {
+		return new Date(System.currentTimeMillis() + p * 1000);
 	}
 
 	/**
@@ -147,9 +150,26 @@ public class JwtTokenUtil {
 	 * @param claims
 	 * @return String
 	 */
-	private String gerarToken(Map<String, Object> claims) {
-		return Jwts.builder().setClaims(claims).setExpiration(gerarDataExpiracao())
+	private String gerarToken(Map<String, Object> claims, long expiration) {
+		return Jwts.builder().setClaims(claims).setExpiration(gerarDataExpiracao(expiration))
 				.signWith(SignatureAlgorithm.HS512, secret).compact();
+	}
+
+	public String gerarTokenDeRecuperacaoDeSenha(String email) {
+		Map<String, Object> claims = new HashMap<>();
+		claims.put(CLAIM_KEY_USERNAME, email);
+		claims.put(CLAIM_KEY_CREATED, new Date());
+		return gerarToken(claims, expirationLinkPass);
+//		return Jwts.builder().setSubject(email).setExpiration(gerarDataExpiracao(expirationLinkPass))
+//				.signWith(SignatureAlgorithm.HS512, secret).compact();
+	}
+
+	public String pegarEmailDoToken(String token) {
+		Claims claims = getClaimsFromToken(token);
+		if (claims != null) {
+			return claims.getSubject();
+		}
+		return null;
 	}
 
 }
