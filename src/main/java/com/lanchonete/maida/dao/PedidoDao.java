@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.lanchonete.maida.model.Pedido;
 import com.lanchonete.maida.model.Pedido.StatusPedido;
 import com.lanchonete.maida.model.Usuario;
+import com.lanchonete.maida.repository.ItemPedidoRepository;
 import com.lanchonete.maida.repository.PedidoRepository;
 import com.lanchonete.maida.service.IPedidoService;
 
@@ -18,6 +19,9 @@ public class PedidoDao implements IPedidoService {
 
 	@Autowired
 	private PedidoRepository rep;
+
+	@Autowired
+	ItemPedidoRepository iRep;
 
 	public Optional<Pedido> buscarPorId(int id) {
 		return rep.findById(id);
@@ -52,6 +56,7 @@ public class PedidoDao implements IPedidoService {
 
 	@Override
 	public Pedido salvar(Pedido pedido) {
+		iRep.saveAll(pedido.getItensPedido());
 		return rep.save(pedido);
 	}
 

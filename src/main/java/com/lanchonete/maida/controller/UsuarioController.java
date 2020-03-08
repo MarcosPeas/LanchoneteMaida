@@ -3,7 +3,7 @@ package com.lanchonete.maida.controller;
 import java.util.List;
 import java.util.Optional;
 
-import javax.validation.Valid;
+import javax.validation.ConstraintViolationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,9 +26,9 @@ public class UsuarioController {
 	@Autowired
 	private IUsuarioService dao;
 
-
 	@PutMapping
-	public void atualizar(@Valid @RequestBody Usuario usuario) {
+	public void atualizar(@RequestBody Usuario usuario) throws ConstraintViolationException {
+// 			tratar ao tentar atualizar para gestores
 		dao.salvar(usuario);
 	}
 

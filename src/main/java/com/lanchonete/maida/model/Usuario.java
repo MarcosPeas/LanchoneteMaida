@@ -72,6 +72,6 @@ public class Usuario  {
 	}
 
 	public enum Perfil {
-		ROLE_ADMIN, ROLE_GESTOR, ROLE_CLIENTE
+		/*ROLE_ADMIN,*/ ROLE_GESTOR, ROLE_CLIENTE
 	}
 }

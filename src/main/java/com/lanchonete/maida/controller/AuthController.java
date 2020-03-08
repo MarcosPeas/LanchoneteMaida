@@ -1,9 +1,11 @@
 package com.lanchonete.maida.controller;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import javax.validation.ConstraintViolationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lanchonete.maida.exceptions.ConstraintViolationImpl;
 import com.lanchonete.maida.model.Usuario;
 import com.lanchonete.maida.response.Response;
 import com.lanchonete.maida.security.JwtTokenUtil;
@@ -54,6 +57,14 @@ public class AuthController {
 
 	@PostMapping(value = "/cadastro")
 	public ResponseEntity<Response<Integer>> cadastrar(@RequestBody Usuario usuario) {
+		
+		if (usuario.getPerfil() == Usuario.Perfil.ROLE_GESTOR) {
+			Set<ConstraintViolationImpl<Usuario>> erros = new HashSet<>();
+			erros.add(ConstraintViolationImpl.of("Erro ao cadastrar usuário", "Não é possível cadastrar gestores",
+					usuario));
+			throw new ConstraintViolationException(erros);
+		}
+		
 		service.salvar(usuario);
 		Response<Integer> response = Response.of(usuario.getId());
 		return new ResponseEntity<Response<Integer>>(response, HttpStatus.CREATED);
@@ -68,15 +79,16 @@ public class AuthController {
 	 * @throws AuthenticationException
 	 */
 	@PostMapping
-	public ResponseEntity<Response<TokenDto>> gerarTokenJwt(@Valid @RequestBody Usuario usuario, BindingResult result)
+	public ResponseEntity<Response<TokenDto>> gerarTokenJwt(@RequestBody Usuario usuario, BindingResult result)
 			throws AuthenticationException {
 		Response<TokenDto> response = Response.erro();
 
-		/*if (result.hasErrors()) {
-			log.error("Erro validando lançamento: {}", result.getAllErrors());
-			result.getAllErrors().forEach(error -> response.getErros().add(error.getDefaultMessage()));
-			return ResponseEntity.badRequest().body(response);
-		}*/
+		/*
+		 * if (result.hasErrors()) { log.error("Erro validando lançamento: {}",
+		 * result.getAllErrors()); result.getAllErrors().forEach(error ->
+		 * response.getErros().add(error.getDefaultMessage())); return
+		 * ResponseEntity.badRequest().body(response); }
+		 */
 
 		Optional<Usuario> optional = service.buscarPorEmail(usuario.getEmail());
 		if (optional.isEmpty()) {

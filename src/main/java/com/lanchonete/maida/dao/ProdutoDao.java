@@ -19,7 +19,7 @@ public class ProdutoDao implements IProdutoService {
 
 	@Override
 	public Produto salvar(Produto produto) {
-		return rep.save(produto);
+		return rep.saveAndFlush(produto);
 	}
 
 	@Override

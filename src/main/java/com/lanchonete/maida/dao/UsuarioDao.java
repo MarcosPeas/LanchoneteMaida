@@ -28,7 +28,7 @@ public class UsuarioDao implements IUsuarioService {
 
 	@Override
 	public Usuario salvar(Usuario usuario) {
-		return repository.save(usuario);
+		return repository.saveAndFlush(usuario);
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,8 @@ import com.lanchonete.maida.model.Produto.ProdutoTipo;
 import com.lanchonete.maida.response.Response;
 import com.lanchonete.maida.service.IProdutoService;
 
+import javassist.NotFoundException;
+
 @RestController
 @RequestMapping("/v1/produtos")
 public class ProdutoController {
@@ -34,7 +37,7 @@ public class ProdutoController {
 
 	@PostMapping
 	@PreAuthorize("hasAnyRole('GESTOR')")
-	public ResponseEntity<Response<Integer>> salvar(@Valid @RequestBody Produto produto) {
+	public ResponseEntity<Response<Integer>> salvar(@RequestBody Produto produto) {
 		dao.salvar(produto);
 		Response<Integer> response = Response.of(produto.getId());
 		return new ResponseEntity<Response<Integer>>(response, HttpStatus.CREATED);
@@ -42,7 +45,16 @@ public class ProdutoController {
 
 	@PutMapping
 	@PreAuthorize("hasAnyRole('GESTOR')")
-	public void atualizar(@Valid Produto produto) {
+	public void atualizar(/*@Valid*/ @RequestBody Produto produto/*, BindingResult result*/) {
+
+		/*if (result.hasErrors()) {
+			Response<Object> r = Response.instance();
+			result.getAllErrors().forEach(e -> {
+				r.getErros().add(e.getDefaultMessage());
+			});
+			return ResponseEntity.badRequest().body(r);
+		}*/
+
 		dao.salvar(produto);
 	}
 
@@ -54,8 +66,12 @@ public class ProdutoController {
 
 	@GetMapping(value = "/gestor/{id}")
 	@PreAuthorize("hasAnyRole('GESTOR')")
-	public Response<Optional<Produto>> buscarPorId(@PathVariable int id) {
-		return Response.of(dao.buscarPorId(id));
+	public Response<Produto> buscarPorId(@PathVariable int id) throws NotFoundException {
+		Optional<Produto> optional = dao.buscarPorId(id);
+		if (optional.isEmpty()) {
+			throw new NotFoundException("Produto não encontrado");
+		}
+		return Response.of(optional.get());
 	}
 
 	@GetMapping(value = "/gestor/like/{nome}")
@@ -72,8 +88,12 @@ public class ProdutoController {
 	}
 
 	@GetMapping(value = "/{id}")
-	public Response<Optional<Produto>> clienteBuscarPorId(@PathVariable int id) {
-		return Response.of(dao.clienteBuscarPorId(id));
+	public Response<Produto> clienteBuscarPorId(@PathVariable int id) throws NotFoundException {
+		Optional<Produto> optional = dao.clienteBuscarPorId(id);
+		if (optional.isEmpty()) {
+			throw new NotFoundException("Produto não encontrado");
+		}
+		return Response.of(optional.get());
 	}
 
 	@GetMapping(value = "/categoria/{tipo}")
