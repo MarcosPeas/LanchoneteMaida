@@ -3,6 +3,8 @@ package com.lanchonete.maida.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +34,7 @@ public class ProdutoController {
 
 	@PostMapping
 	@PreAuthorize("hasAnyRole('GESTOR')")
-	public ResponseEntity<Response<Integer>> salvar(@RequestBody Produto produto) {
+	public ResponseEntity<Response<Integer>> salvar(@Valid @RequestBody Produto produto) {
 		dao.salvar(produto);
 		Response<Integer> response = Response.of(produto.getId());
 		return new ResponseEntity<Response<Integer>>(response, HttpStatus.CREATED);
@@ -40,7 +42,7 @@ public class ProdutoController {
 
 	@PutMapping
 	@PreAuthorize("hasAnyRole('GESTOR')")
-	public void atualizar(Produto produto) {
+	public void atualizar(@Valid Produto produto) {
 		dao.salvar(produto);
 	}
 

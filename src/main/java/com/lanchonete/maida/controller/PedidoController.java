@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +37,7 @@ public class PedidoController {
 
 	@PostMapping
 	@PreAuthorize("hasAnyRole('CLIENTE')")
-	public ResponseEntity<Response<Pedido>> salvar(@RequestBody Pedido pedido) {
+	public ResponseEntity<Response<Pedido>> salvar(@Valid @RequestBody Pedido pedido) {
 		Response<Pedido> response = Response.of(dao.salvar(pedido));
 		return new ResponseEntity<Response<Pedido>>(response, HttpStatus.CREATED);
 	}
@@ -51,7 +53,7 @@ public class PedidoController {
 	}
 
 	@PutMapping
-	public Response<Pedido> alterar(@RequestBody Pedido pedido) {
+	public Response<Pedido> alterar(@Valid @RequestBody Pedido pedido) {
 		return Response.of(dao.salvar(pedido));
 	}
 

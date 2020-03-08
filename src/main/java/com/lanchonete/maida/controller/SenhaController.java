@@ -57,7 +57,11 @@ public class SenhaController {
 
 	@PatchMapping
 	public ResponseEntity<Response<Object>> alterarSenha(@RequestBody SenhaModel senhaModel) {
-		System.out.println(senhaModel);
+
+		if (senhaModel == null || senhaModel.getSenha1() == null || senhaModel.getSenha2() == null) {
+			return ResponseEntity.badRequest().body(Response.erro("Informe a senha e a sua repetição"));
+		}
+
 		if (!senhaModel.getSenha1().equals(senhaModel.getSenha2())) {
 			return ResponseEntity.badRequest().body(Response.erro("A senha e a repetição da senha não são iguais"));
 		}
