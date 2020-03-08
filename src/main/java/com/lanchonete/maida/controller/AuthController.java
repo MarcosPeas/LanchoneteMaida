@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -47,9 +48,16 @@ public class AuthController {
 
 	@Autowired
 	private UserDetailsService userDetailsService;
-	
+
 	@Autowired
 	private IUsuarioService service;
+
+	@PostMapping(value = "/cadastro")
+	public ResponseEntity<Response<Integer>> cadastrar(@RequestBody Usuario usuario) {
+		service.salvar(usuario);
+		Response<Integer> response = Response.of(usuario.getId());
+		return new ResponseEntity<Response<Integer>>(response, HttpStatus.CREATED);
+	}
 
 	/**
 	 * Gera e retorna um novo token JWT.
@@ -64,19 +72,19 @@ public class AuthController {
 			throws AuthenticationException {
 		Response<TokenDto> response = Response.erro();
 
-		if (result.hasErrors()) {
+		/*if (result.hasErrors()) {
 			log.error("Erro validando lançamento: {}", result.getAllErrors());
 			result.getAllErrors().forEach(error -> response.getErros().add(error.getDefaultMessage()));
 			return ResponseEntity.badRequest().body(response);
-		}
-		
+		}*/
+
 		Optional<Usuario> optional = service.buscarPorEmail(usuario.getEmail());
-		if(optional.isEmpty()) {
+		if (optional.isEmpty()) {
 			response.getErros().add("Usuário não encontrado");
 			return ResponseEntity.badRequest().body(response);
 		}
 		String senhaEncrip = optional.get().getSenha();
-		if(!SenhaUtil.validarSenha(usuario.getSenha(), senhaEncrip)) {
+		if (!SenhaUtil.validarSenha(usuario.getSenha(), senhaEncrip)) {
 			response.getErros().add("Senha incorreta");
 			return ResponseEntity.badRequest().body(response);
 		}

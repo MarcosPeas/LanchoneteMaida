@@ -3,14 +3,13 @@ package com.lanchonete.maida.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,15 +26,9 @@ public class UsuarioController {
 	@Autowired
 	private IUsuarioService dao;
 
-	@PostMapping
-	public ResponseEntity<Response<Integer>> salvar(@RequestBody Usuario usuario) {
-		dao.salvar(usuario);
-		Response<Integer> response = Response.of(usuario.getId());
-		return new ResponseEntity<Response<Integer>>(response, HttpStatus.CREATED);
-	}
 
 	@PutMapping
-	public void atualizar(@RequestBody Usuario usuario) {
+	public void atualizar(@Valid @RequestBody Usuario usuario) {
 		dao.salvar(usuario);
 	}
 
@@ -50,7 +43,7 @@ public class UsuarioController {
 		return dao.listar();
 	}
 
-	@DeleteMapping(value = "{/id}")
+	@DeleteMapping(value = "/{id}")
 	public void deletar(@PathVariable int id) {
 		dao.deletar(id);
 	}

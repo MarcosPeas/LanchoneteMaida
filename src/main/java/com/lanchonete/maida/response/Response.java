@@ -14,6 +14,10 @@ public class Response<T> {
 	private T data;
 	private List<String> erros;
 
+	private Response() {
+		erros = new ArrayList<>();
+	}
+
 	private Response(T data) {
 		this.data = data;
 	}
@@ -29,5 +33,9 @@ public class Response<T> {
 
 	public static <T> Response<T> erro(String... erros) {
 		return new Response<>(erros);
+	}
+
+	public static <T> Response<T> instance() {
+		return new Response<>();
 	}
 }

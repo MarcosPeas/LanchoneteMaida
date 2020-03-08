@@ -9,9 +9,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.lanchonete.maida.model.Usuario;
 import com.lanchonete.maida.security.JwtTokenUtil;
-import com.lanchonete.maida.security.JwtUsuario;
 
 @SpringBootApplication
 @EnableAutoConfiguration(exclude = { SecurityAutoConfiguration.class })
@@ -28,15 +26,17 @@ public class LanchoneteMaidaApplication implements WebMvcConfigurer {
 
 		return a -> {
 			/**/System.out.println("Inciou...");
-			/*System.out.println("localhost:8080/swagger-ui.html");
-
-			Usuario u = new Usuario();
-			u.setEmail("maria.clara@gmail.com");
-			u.setPerfil(Usuario.Perfil.ROLE_CLIENTE);
-
-			String token = jwtTokenUtil.gerarTokenDeRecuperacaoDeSenha("peas.shadow@gmail.com");
-
-			System.out.println(token);*/
+			/*
+			 * System.out.println("localhost:8080/swagger-ui.html");
+			 * 
+			 * Usuario u = new Usuario(); u.setEmail("maria.clara@gmail.com");
+			 * u.setPerfil(Usuario.Perfil.ROLE_CLIENTE);
+			 * 
+			 * String token =
+			 * jwtTokenUtil.gerarTokenDeRecuperacaoDeSenha("peas.shadow@gmail.com");
+			 * 
+			 * System.out.println(token);
+			 */
 
 		};
 	}

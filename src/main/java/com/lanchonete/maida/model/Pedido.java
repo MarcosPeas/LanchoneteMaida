@@ -11,7 +11,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,11 +34,16 @@ public class Pedido {
 	private LocalDateTime horarioAceito;
 	private LocalDateTime horarioEntregue;
 	private BigDecimal valor;
+	
+	@NotBlank(message = "Informe a forma de pagamento")
 	private String formaPagamento;
 
 	@ManyToOne
 	@JoinColumn(name = "usuario_id")
+	@NotNull(message = "O cliente não pode ser nullo")
 	private Usuario cliente;
+
+	@NotNull(message = "O status não pode ser nullo")
 	private StatusPedido status;
 
 	@OneToMany
@@ -43,6 +51,11 @@ public class Pedido {
 
 	@OneToMany
 	private List<MensagemPedido> mensagens;
+
+	@PrePersist
+	private void definirHorarioPedido() {
+		horarioPedido = LocalDateTime.now();
+	}
 
 	public enum StatusPedido {
 		SOLICITADO, RECEBIDO, EM_PREPARO, RECUSADO, CANCELADO, EM_ENTREGA, FINALIZADO
