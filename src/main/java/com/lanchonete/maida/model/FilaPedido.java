@@ -1,15 +1,14 @@
-package com.lanchonete.maida.util;
+package com.lanchonete.maida.model;
 
 import java.time.LocalTime;
 import java.util.List;
 
-import com.lanchonete.maida.model.Pedido;
 import com.lanchonete.maida.model.Pedido.StatusPedido;
 
 import lombok.Getter;
 import lombok.Setter;
 
-public class FilaPedidoInfo {
+public class FilaPedido {
 
 	@Getter
 	private List<Pedido> pedidos;
@@ -29,9 +28,9 @@ public class FilaPedidoInfo {
 		}
 		Integer min = pedidos.stream().mapToInt(p -> {
 			if (p.getStatus() == StatusPedido.SOLICITADO) {
-				return 2;
+				return 14;
 			} else if (p.getStatus() == StatusPedido.RECEBIDO) {
-				return 6;
+				return 12;
 			} else if (p.getStatus() == StatusPedido.EM_PREPARO) {
 				return 6;
 			}

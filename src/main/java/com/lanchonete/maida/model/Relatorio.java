@@ -1,4 +1,4 @@
-package com.lanchonete.maida.util;
+package com.lanchonete.maida.model;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.lanchonete.maida.model.Pedido;
 import com.lanchonete.maida.model.Pedido.StatusPedido;
 
 import lombok.AllArgsConstructor;

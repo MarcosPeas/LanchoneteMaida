@@ -20,11 +20,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lanchonete.maida.model.FilaPedido;
 import com.lanchonete.maida.model.Pedido;
 import com.lanchonete.maida.model.Pedido.StatusPedido;
 import com.lanchonete.maida.response.Response;
 import com.lanchonete.maida.service.IPedidoService;
-import com.lanchonete.maida.util.FilaPedidoInfo;
 
 @RestController
 @RequestMapping("/v1/pedidos")
@@ -93,13 +93,13 @@ public class PedidoController {
 	/* SISTEMA DE FILA DE PEDIDOS */
 	@GetMapping(value = "/fila/{id}")
 	@PreAuthorize("hasAnyRole('CLIENTE')")
-	public Response<FilaPedidoInfo> filaPedidos(@PathVariable int id) {
+	public Response<FilaPedido> filaPedidos(@PathVariable int id) {
 		List<StatusPedido> statusList = Arrays.asList(StatusPedido.SOLICITADO, StatusPedido.RECEBIDO,
 				StatusPedido.EM_PREPARO);
 
 		List<Pedido> pedidos = dao.buscarPedidosFila(statusList, id);
 
-		FilaPedidoInfo filaInfo = new FilaPedidoInfo();
+		FilaPedido filaInfo = new FilaPedido();
 		filaInfo.setPedidos(pedidos);
 
 		return Response.of(filaInfo);

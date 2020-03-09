@@ -31,7 +31,7 @@ public class Response<T> {
 		return new Response<T>(value);
 	}
 
-	public static <T> Response<T> erro(String... erros) {
+	public static <T> Response<T> erros(String... erros) {
 		return new Response<>(erros);
 	}
 

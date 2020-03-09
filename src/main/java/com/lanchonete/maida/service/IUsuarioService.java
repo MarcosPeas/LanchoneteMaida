@@ -10,8 +10,10 @@ public interface IUsuarioService {
 	Optional<Usuario> buscarPorEmail(String email);
 
 	Optional<Usuario> buscarPorId(int id);
-
+	
 	Usuario salvar(Usuario usuario);
+	
+	Usuario atualizar(Usuario usuario);
 
 	List<Usuario> listar();
 	

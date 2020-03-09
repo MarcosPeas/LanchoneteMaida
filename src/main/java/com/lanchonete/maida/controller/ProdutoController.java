@@ -101,7 +101,7 @@ public class ProdutoController {
 		try {
 			return ResponseEntity.ok(Response.of(dao.clienteListarPorCategoria(ProdutoTipo.valueOf(tipo))));
 		} catch (Exception e) {
-			return ResponseEntity.badRequest().body(Response.erro("Categoria inválida"));
+			return ResponseEntity.badRequest().body(Response.erros("Categoria inválida"));
 		}
 	}
 

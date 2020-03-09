@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lanchonete.maida.model.Pedido;
+import com.lanchonete.maida.model.Relatorio;
 import com.lanchonete.maida.model.Pedido.StatusPedido;
+import com.lanchonete.maida.model.Relatorio.RelatorioTipo;
 import com.lanchonete.maida.response.Response;
 import com.lanchonete.maida.service.IPedidoService;
-import com.lanchonete.maida.util.Relatorio;
-import com.lanchonete.maida.util.Relatorio.RelatorioTipo;
 
 @RestController("/v1/relatorio")
 public class RelatorioController {

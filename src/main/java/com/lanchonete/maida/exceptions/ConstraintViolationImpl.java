@@ -1,6 +1,10 @@
 package com.lanchonete.maida.exceptions;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import javax.validation.Path;
 import javax.validation.metadata.ConstraintDescriptor;
 
@@ -10,10 +14,7 @@ public class ConstraintViolationImpl<T> implements ConstraintViolation<T> {
 	private String messageTemplate;
 	private T t;
 
-
-
 	private ConstraintViolationImpl(String message, String messageTemplate, T t) {
-		super();
 		this.message = message;
 		this.messageTemplate = messageTemplate;
 		this.t = t;
@@ -42,50 +43,49 @@ public class ConstraintViolationImpl<T> implements ConstraintViolation<T> {
 
 	@Override
 	public Object getLeafBean() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Object[] getExecutableParameters() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Object getExecutableReturnValue() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Path getPropertyPath() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Object getInvalidValue() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public ConstraintDescriptor getConstraintDescriptor() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object unwrap(@SuppressWarnings("rawtypes") Class type) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public static <T> ConstraintViolationImpl<T> of(String message, String messageTemplete, T value) {
 		return new ConstraintViolationImpl<T>(message, messageTemplete, value);
+	}
+
+	public ConstraintViolationException getVioletaionException() {
+		Set<ConstraintViolationImpl<T>> erros = new HashSet<>();
+		erros.add(this);
+		return new ConstraintViolationException(erros);
 	}
 
 }

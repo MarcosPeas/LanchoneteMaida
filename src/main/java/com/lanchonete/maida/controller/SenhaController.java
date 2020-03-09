@@ -21,7 +21,7 @@ import com.lanchonete.maida.security.JwtTokenUtil;
 import com.lanchonete.maida.service.IUsuarioService;
 import com.lanchonete.maida.util.SenhaUtil;
 
-@RestController("/senha")
+@RestController("/v1/senha")
 public class SenhaController {
 
 	@Autowired
@@ -39,7 +39,7 @@ public class SenhaController {
 
 		if (optional.isEmpty()) {
 			ResponseEntity<Response<Void>> responseEntity = new ResponseEntity<Response<Void>>(
-					Response.erro("E-mail não encontrado"), HttpStatus.NOT_FOUND);
+					Response.erros("E-mail não encontrado"), HttpStatus.NOT_FOUND);
 			return responseEntity;
 		}
 
@@ -59,18 +59,18 @@ public class SenhaController {
 	public ResponseEntity<Response<Object>> alterarSenha(@RequestBody SenhaModel senhaModel) {
 
 		if (senhaModel == null || senhaModel.getSenha1() == null || senhaModel.getSenha2() == null) {
-			return ResponseEntity.badRequest().body(Response.erro("Informe a senha e a sua repetição"));
+			return ResponseEntity.badRequest().body(Response.erros("Informe a senha e a sua repetição"));
 		}
 
 		if (!senhaModel.getSenha1().equals(senhaModel.getSenha2())) {
-			return ResponseEntity.badRequest().body(Response.erro("A senha e a repetição da senha não são iguais"));
+			return ResponseEntity.badRequest().body(Response.erros("A senha e a repetição da senha não são iguais"));
 		}
 		if (tokenUtil.tokenValido(senhaModel.getToken())) {
 			String email = tokenUtil.pegarEmailDoToken(senhaModel.getToken());
 			System.out.println(email);
 			Optional<Usuario> optional = usuarioService.buscarPorEmail(email);
 			if (optional.isEmpty()) {
-				Response<Object> response = Response.erro("Usuário não encontrado");
+				Response<Object> response = Response.erros("Usuário não encontrado");
 				ResponseEntity<Response<Object>> responseEntity = new ResponseEntity<Response<Object>>(response,
 						HttpStatus.NOT_FOUND);
 				return responseEntity;
@@ -80,6 +80,6 @@ public class SenhaController {
 			usuarioService.salvar(usuario);
 			return ResponseEntity.ok().body(Response.of(null));
 		}
-		return ResponseEntity.ok().body(Response.erro("Token inválido"));
+		return ResponseEntity.ok().body(Response.erros("Token inválido"));
 	}
 }

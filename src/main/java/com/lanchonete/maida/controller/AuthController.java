@@ -1,17 +1,15 @@
 package com.lanchonete.maida.controller;
 
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,7 +17,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.validation.BindingResult;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,7 +33,7 @@ import com.lanchonete.maida.service.IUsuarioService;
 import com.lanchonete.maida.util.SenhaUtil;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/v1/auth")
 @CrossOrigin(origins = "*")
 public class AuthController {
 
@@ -57,14 +55,13 @@ public class AuthController {
 
 	@PostMapping(value = "/cadastro")
 	public ResponseEntity<Response<Integer>> cadastrar(@RequestBody Usuario usuario) {
-		
+
 		if (usuario.getPerfil() == Usuario.Perfil.ROLE_GESTOR) {
-			Set<ConstraintViolationImpl<Usuario>> erros = new HashSet<>();
-			erros.add(ConstraintViolationImpl.of("Erro ao cadastrar usuário", "Não é possível cadastrar gestores",
-					usuario));
-			throw new ConstraintViolationException(erros);
+			String m = "Erro ao cadastrar usuário";
+			String mT = "Não é possível cadastrar gestores";
+			throw ConstraintViolationImpl.of(m, mT, usuario).getVioletaionException();
 		}
-		
+
 		service.salvar(usuario);
 		Response<Integer> response = Response.of(usuario.getId());
 		return new ResponseEntity<Response<Integer>>(response, HttpStatus.CREATED);
@@ -79,26 +76,20 @@ public class AuthController {
 	 * @throws AuthenticationException
 	 */
 	@PostMapping
-	public ResponseEntity<Response<TokenDto>> gerarTokenJwt(@RequestBody Usuario usuario, BindingResult result)
-			throws AuthenticationException {
-		Response<TokenDto> response = Response.erro();
-
-		/*
-		 * if (result.hasErrors()) { log.error("Erro validando lançamento: {}",
-		 * result.getAllErrors()); result.getAllErrors().forEach(error ->
-		 * response.getErros().add(error.getDefaultMessage())); return
-		 * ResponseEntity.badRequest().body(response); }
-		 */
+	public ResponseEntity<Response<TokenDto>> login(@RequestBody Usuario usuario) throws AuthenticationException {
+		
 
 		Optional<Usuario> optional = service.buscarPorEmail(usuario.getEmail());
 		if (optional.isEmpty()) {
-			response.getErros().add("Usuário não encontrado");
-			return ResponseEntity.badRequest().body(response);
+			/*response.getErros().add("Usuário não encontrado");
+			return ResponseEntity.badRequest().body(response);*/
+			throw new UsernameNotFoundException("Usuário não encontrado");
 		}
 		String senhaEncrip = optional.get().getSenha();
 		if (!SenhaUtil.validarSenha(usuario.getSenha(), senhaEncrip)) {
-			response.getErros().add("Senha incorreta");
-			return ResponseEntity.badRequest().body(response);
+			/*response.getErros().add("Senha incorreta");
+			return ResponseEntity.badRequest().body(response);*/
+			throw new AuthenticationCredentialsNotFoundException("Senha incorreta");
 		}
 
 		log.info("Gerando token para o email {}.", usuario.getEmail());
@@ -108,6 +99,8 @@ public class AuthController {
 
 		UserDetails userDetails = userDetailsService.loadUserByUsername(usuario.getEmail());
 		String token = jwtTokenUtil.obterToken(userDetails);
+		
+		Response<TokenDto> response = Response.erros();
 		response.setData(new TokenDto(token));
 
 		return ResponseEntity.ok(response);
@@ -122,7 +115,7 @@ public class AuthController {
 	@PostMapping(value = "/refresh")
 	public ResponseEntity<Response<TokenDto>> gerarRefreshTokenJwt(HttpServletRequest request) {
 		log.info("Gerando refresh token JWT.");
-		Response<TokenDto> response = Response.erro();
+		Response<TokenDto> response = Response.erros();
 		Optional<String> token = Optional.ofNullable(request.getHeader(TOKEN_HEADER));
 
 		if (token.isPresent() && token.get().startsWith(BEARER_PREFIX)) {

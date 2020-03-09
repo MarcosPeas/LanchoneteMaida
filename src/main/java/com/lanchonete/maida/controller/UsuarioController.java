@@ -28,8 +28,7 @@ public class UsuarioController {
 
 	@PutMapping
 	public void atualizar(@RequestBody Usuario usuario) throws ConstraintViolationException {
-// 			tratar ao tentar atualizar para gestores
-		dao.salvar(usuario);
+		dao.atualizar(usuario);
 	}
 
 	@GetMapping(value = "/{id}")
