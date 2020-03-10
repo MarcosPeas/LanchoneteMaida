@@ -132,9 +132,7 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`id`, `data_nascimento`, `email`, `nome`, `perfil`, `senha`, `telefone`) VALUES
-(1, '1990-07-02', 'peas.shadow@gmail.com', 'Marcos Peas', 'ROLE_GESTOR', '$2a$10$9QORdqliV9X9mq9hQoMaqubzI0SrkzueEYSKsRN3Dm3Yx4auro4e2', '(99) 982028399'),
-(2, '1990-07-04', 'maria@gmail.com', 'Maria', 'ROLE_CLIENTE', '$2a$10$HNDp88aG3GKfg5ykOdq91erA4b1mqd.urxTYI6Gq1P5SElJ92z6ru', NULL);
-
+(1, '1990-07-02', 'peas.shadow@gmail.com', 'Marcos Peas', 'ROLE_GESTOR', '$2a$10$9QORdqliV9X9mq9hQoMaqubzI0SrkzueEYSKsRN3Dm3Yx4auro4e2', '(99) 982028399');
 
 
 --

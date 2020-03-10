@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,11 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lanchonete.maida.model.FilaPedido;
-import com.lanchonete.maida.model.MensagemPedido;
 import com.lanchonete.maida.model.Pedido;
 import com.lanchonete.maida.model.Pedido.StatusPedido;
 import com.lanchonete.maida.response.Response;
-import com.lanchonete.maida.service.IMensagemPedidoService;
 import com.lanchonete.maida.service.IPedidoService;
 
 @RestController
@@ -34,8 +31,6 @@ public class PedidoController {
 	@Autowired
 	private IPedidoService dao;
 
-	@Autowired
-	private IMensagemPedidoService mensagemDao;
 
 	@PostMapping
 	@PreAuthorize("hasAnyRole('CLIENTE')")
@@ -92,9 +87,9 @@ public class PedidoController {
 	}
 
 	@DeleteMapping(value = "/{id}")
-	public BodyBuilder deletar(@PathVariable int id) {
+	public ResponseEntity<?> deletar(@PathVariable int id) {
 		dao.deletar(id);
-		return ResponseEntity.status(HttpStatus.NO_CONTENT);
+		return ResponseEntity.ok().build();
 	}
 
 	/* SISTEMA DE FILA DE PEDIDOS */
@@ -109,35 +104,5 @@ public class PedidoController {
 	}
 
 	/* MENSAGENS */
-
-	@PostMapping(value = "/{pedidoId}/mensagens")
-	public ResponseEntity<Object> salvarMensagem(@PathVariable int pedidoId, @RequestBody MensagemPedido mensagem) {
-		System.out.println("Salvando mensagem");
-		Pedido pedido = dao.buscarPorId(pedidoId);
-		mensagem.setPedido(pedido);
-		MensagemPedido mensagemPedido = mensagemDao.salvar(mensagem);
-		pedido.getMensagens().add(mensagemPedido);
-		dao.salvar(pedido);
-		return ResponseEntity.status(HttpStatus.CREATED).body(Response.of(pedido.getId()));
-	}
-
-	@PutMapping(value = "/{pedidoId}/mensagens")
-	public ResponseEntity<?> alterarMensagem(@PathVariable int pedidoId, @RequestBody MensagemPedido mensagem) {
-		mensagemDao.salvar(mensagem);
-		return ResponseEntity.ok().build();
-	}
-
-	@GetMapping(value = "/{pedidoId}/mensagens")
-	public ResponseEntity<Object> listarMensagem(@PathVariable int pedidoId) {
-		Pedido pedido = dao.buscarPorId(pedidoId);
-		List<MensagemPedido> mensagens = mensagemDao.listarPorPedido(pedido);
-		return ResponseEntity.ok(mensagens);
-	}
-
-	@DeleteMapping(value = "/{pedidoId}/mensagens/{idMensagem}")
-	public ResponseEntity<Object> deletarMensagem(@PathVariable int pedidoId, @PathVariable int idMensagem) {
-		mensagemDao.deletar(idMensagem);
-		return ResponseEntity.ok().build();
-	}
 
 }
