@@ -49,7 +49,7 @@ public class UsuarioDao implements IUsuarioService {
 	}
 
 	@Override
-	public void deletar(int id)  {
+	public void deletar(int id) {
 		repository.delete(buscarPorId(id));
 	}
 

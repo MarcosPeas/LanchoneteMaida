@@ -83,7 +83,7 @@ public class TratadorExcecoes /* extends ResponseEntityExceptionHandler */ {
 						"para realizar esta operação, é necessário remover os pedidos vinculados a esta entidade");
 			}
 		}
-
+		ex.printStackTrace();
 		return Response.erros("Erro de integridade do banco");
 	}
 

@@ -2,7 +2,9 @@ package com.lanchonete.maida.model;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Basic;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -11,15 +13,20 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "mensagem_pedido")
-@Data
+@Getter
+@Setter
+@ToString(onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class MensagemPedido {
@@ -42,6 +49,8 @@ public class MensagemPedido {
 
 	@ManyToOne
 	@JoinColumn(name = "pedido_id")
-	@NotNull(message = "O pedido não pode ser nulo")
+	@Basic(fetch = FetchType.LAZY)
+	@JsonIgnore
 	private Pedido pedido;
+	
 }

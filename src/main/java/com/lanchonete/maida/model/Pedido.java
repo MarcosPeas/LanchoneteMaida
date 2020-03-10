@@ -4,9 +4,11 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,9 +29,9 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "pedido")
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class Pedido {
 
 	@Id
@@ -39,7 +41,7 @@ public class Pedido {
 	private LocalDateTime horarioAceito;
 	private LocalDateTime horarioEntregue;
 	private BigDecimal valor;
-	
+
 	@NotBlank(message = "Informe a forma de pagamento")
 	private String formaPagamento;
 
@@ -54,10 +56,12 @@ public class Pedido {
 
 	@OneToMany
 	@Cascade(CascadeType.ALL)
+	@Basic(fetch = FetchType.EAGER)
 	private List<ItemPedido> itensPedido;
 
 	@OneToMany
 	@Cascade(CascadeType.ALL)
+	@Basic(fetch = FetchType.EAGER)
 	private List<MensagemPedido> mensagens;
 
 	@PrePersist

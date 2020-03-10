@@ -16,11 +16,11 @@ public interface IPedidoService {
 
 	Pedido buscarPorIdECliente(int id, int idCliente);
 
-	List<Pedido> buscarPorStatus(Pedido.StatusPedido status);
+	//List<Pedido> buscarPorStatus(Pedido.StatusPedido status);
 
 	List<Pedido> buscarPorStatus(List<Pedido.StatusPedido> statusList);
 
-	List<Pedido> buscarPorClienteEStatus(int clientId, Pedido.StatusPedido status);
+	//List<Pedido> buscarPorClienteEStatus(int clientId, Pedido.StatusPedido status);
 
 	List<Pedido> buscarPorClienteEStatus(int clientId, List<Pedido.StatusPedido> statusList);
 

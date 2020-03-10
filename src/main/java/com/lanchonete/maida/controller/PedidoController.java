@@ -49,10 +49,10 @@ public class PedidoController {
 		return Response.of(dao.buscarPorId(id));
 	}
 
-	@GetMapping(value = "/{id}/cliente/{idCliente}")
+	/*@GetMapping(value = "/{id}/cliente/{idCliente}")
 	public Response<Pedido> buscarPorIdECliente(@PathVariable int id, @PathVariable int idCliente) {
 		return Response.of(dao.buscarPorIdECliente(id, idCliente));
-	}
+	}*/
 
 	@PutMapping
 	@PreAuthorize("hasAnyRole('GESTOR')")
@@ -65,27 +65,28 @@ public class PedidoController {
 		return ResponseEntity.ok(Response.of(dao.alterarStatus(pedido)));
 	}
 
-	@GetMapping(value = "/{idCliente}/{status}")
+	/*@GetMapping(value = "/{idCliente}/status")
 	public ResponseEntity<Response<Object>> buscarPorClienteEEstatus(@PathVariable int idCliente,
 			@RequestBody StatusPedido status) {
 		List<Pedido> list = dao.buscarPorClienteEStatus(idCliente, status);
 		return ResponseEntity.ok(Response.of(list));
-	}
+	}*/
 
-	@GetMapping(value = "/{idCliente}/list/{status}")
+	@GetMapping(value = "/{idCliente}/status")
 	public ResponseEntity<Response<Object>> buscarPorClienteEEstatus(@PathVariable int idCliente,
 			@RequestParam List<StatusPedido> status) {
 		List<Pedido> list = dao.buscarPorClienteEStatus(idCliente, status);
 		return ResponseEntity.ok(Response.of(list));
 	}
 
-	@GetMapping(value = "/status/{status}")
+	/*@GetMapping(value = "/status")
+	@PreAuthorize("hasAnyRole('GESTOR')")
 	public Response<List<Pedido>> buscarPorStatus(@RequestParam StatusPedido status) {
 		return Response.of(dao.buscarPorStatus(status));
-	}
+	}*/
 
-	@GetMapping(value = "/status/list")
-	@PreAuthorize("hasAnyRole('CLIENTE')")
+	@GetMapping(value = "/status")
+	@PreAuthorize("hasAnyRole('GESTOR')")
 	public Response<List<Pedido>> buscarPorStatus(@RequestParam List<StatusPedido> status) {
 		return Response.of(dao.buscarPorStatus(status));
 	}
@@ -98,7 +99,6 @@ public class PedidoController {
 
 	/* SISTEMA DE FILA DE PEDIDOS */
 	@GetMapping(value = "/fila/{id}")
-	@PreAuthorize("hasAnyRole('CLIENTE')")
 	public Response<FilaPedido> filaPedidos(@PathVariable int id) {
 		List<StatusPedido> statusList = Arrays.asList(StatusPedido.SOLICITADO, StatusPedido.RECEBIDO,
 				StatusPedido.EM_PREPARO);
@@ -112,7 +112,12 @@ public class PedidoController {
 
 	@PostMapping(value = "/{pedidoId}/mensagens")
 	public ResponseEntity<Object> salvarMensagem(@PathVariable int pedidoId, @RequestBody MensagemPedido mensagem) {
-		MensagemPedido pedido = mensagemDao.salvar(mensagem);
+		System.out.println("Salvando mensagem");
+		Pedido pedido = dao.buscarPorId(pedidoId);
+		mensagem.setPedido(pedido);
+		MensagemPedido mensagemPedido = mensagemDao.salvar(mensagem);
+		pedido.getMensagens().add(mensagemPedido);
+		dao.salvar(pedido);
 		return ResponseEntity.status(HttpStatus.CREATED).body(Response.of(pedido.getId()));
 	}
 

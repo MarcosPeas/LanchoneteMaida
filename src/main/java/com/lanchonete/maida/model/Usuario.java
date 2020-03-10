@@ -2,12 +2,10 @@ package com.lanchonete.maida.model;
 
 import java.time.LocalDate;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,6 +17,8 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.lanchonete.maida.util.SenhaUtil;
 
 import lombok.AllArgsConstructor;
@@ -58,8 +58,8 @@ public class Usuario  {
 	@ToString.Include
 	private String telefone;
 
-	@Basic(fetch = FetchType.LAZY)
 	@Length(min = 6, message = "A senha deve conter no mínimo seis (6) caracteres")
+	@JsonProperty(access = Access.WRITE_ONLY)
 	private String senha;
 
 	@Enumerated(EnumType.STRING)

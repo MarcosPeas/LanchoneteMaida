@@ -41,21 +41,21 @@ public class PedidoDao implements IPedidoService {
 		return optional.get();
 	}
 
-	@Override
+	/*@Override
 	public List<Pedido> buscarPorStatus(StatusPedido status) {
 		return rep.findByStatusOrderByHorarioPedidoDesc(status);
-	}
+	}*/
 
 	@Override
 	public List<Pedido> buscarPorStatus(List<StatusPedido> status) {
 		return rep.findByStatusInOrderByHorarioPedidoDesc(status);
 	}
 
-	@Override
+	/*@Override
 	public List<Pedido> buscarPorClienteEStatus(int clientId, StatusPedido status) {
 		return rep.findByStatusAndClienteOrderByHorarioPedidoDesc(status,
 				new Usuario(clientId, null, null, null, null, null, null));
-	}
+	}*/
 
 	@Override
 	public List<Pedido> buscarPorClienteEStatus(int clientId, List<StatusPedido> status) {
