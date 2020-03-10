@@ -55,7 +55,7 @@ public class UsuarioDao implements IUsuarioService {
 
 	@Override
 	public Usuario atualizar(Usuario usuario) {
-		buscarPorId(usuario.getId());
+		Usuario u = buscarPorId(usuario.getId());
 		Optional<Usuario> optional = repository.findByPerfil(Perfil.ROLE_GESTOR);
 		if (optional.isPresent()) {
 			Usuario gestor = optional.get();
@@ -65,6 +65,7 @@ public class UsuarioDao implements IUsuarioService {
 				throw ConstraintViolationImpl.of(m, mT, usuario).getViolationException();
 			}
 		}
+		usuario.setSenha(u.getSenha());
 		return repository.saveAndFlush(usuario);
 	}
 
