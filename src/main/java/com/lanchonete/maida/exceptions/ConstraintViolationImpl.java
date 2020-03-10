@@ -82,7 +82,7 @@ public class ConstraintViolationImpl<T> implements ConstraintViolation<T> {
 		return new ConstraintViolationImpl<T>(message, messageTemplete, value);
 	}
 
-	public ConstraintViolationException getVioletaionException() {
+	public ConstraintViolationException getViolationException() {
 		Set<ConstraintViolationImpl<T>> erros = new HashSet<>();
 		erros.add(this);
 		return new ConstraintViolationException(erros);

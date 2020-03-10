@@ -1,11 +1,11 @@
 package com.lanchonete.maida.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.validation.ConstraintViolationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,24 +27,26 @@ public class UsuarioController {
 	private IUsuarioService dao;
 
 	@PutMapping
-	public void atualizar(@RequestBody Usuario usuario) throws ConstraintViolationException {
+	public ResponseEntity<?> atualizar(@RequestBody Usuario usuario) throws ConstraintViolationException {
 		dao.atualizar(usuario);
+		return ResponseEntity.ok().build();
 	}
 
 	@GetMapping(value = "/{id}")
-	public Response<Optional<Usuario>> buscarPorId(@PathVariable int id) {
-		return Response.of(dao.buscarPorId(id));
+	public ResponseEntity<Response<Usuario>> buscarPorId(@PathVariable int id) {
+		return ResponseEntity.ok(Response.of(dao.buscarPorId(id)));
 	}
 
 	@GetMapping
 	@PreAuthorize("hasAnyRole('GESTOR')")
-	public List<Usuario> listar() {
-		return dao.listar();
+	public ResponseEntity<Response<List<Usuario>>> listar() {
+		return ResponseEntity.ok(Response.of(dao.listar()));
 	}
 
 	@DeleteMapping(value = "/{id}")
-	public void deletar(@PathVariable int id) {
+	public ResponseEntity<?> deletar(@PathVariable int id) {
 		dao.deletar(id);
+		return ResponseEntity.ok().build();
 	}
 
 }

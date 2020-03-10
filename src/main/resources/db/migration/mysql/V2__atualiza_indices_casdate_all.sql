@@ -1,0 +1,3 @@
+ALTER TABLE `item_pedido` DROP FOREIGN KEY `FK60ym08cfoysa17wrn1swyiuda`; ALTER TABLE `item_pedido` ADD CONSTRAINT `FK60ym08cfoysa17wrn1swyiuda` FOREIGN KEY (`pedido_id`) REFERENCES `pedido`(`id`) ON DELETE CASCADE ON UPDATE RESTRICT;
+
+ALTER TABLE `pedido_mensagens` DROP FOREIGN KEY `FK5254tqklhbxdpxa6jhqvq85cb`; ALTER TABLE `pedido_mensagens` ADD CONSTRAINT `FK5254tqklhbxdpxa6jhqvq85cb` FOREIGN KEY (`pedido_id`) REFERENCES `pedido`(`id`) ON DELETE CASCADE ON UPDATE RESTRICT;

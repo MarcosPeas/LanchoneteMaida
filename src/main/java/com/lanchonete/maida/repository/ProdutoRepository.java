@@ -22,4 +22,6 @@ public interface ProdutoRepository extends JpaRepository<Produto, Integer> {
 	List<Produto> findBytipoAndDisponivelTrueOrderByTitulo(Produto.ProdutoTipo tipo);
 
 	List<Produto> findByDisponivelTrueOrderByTitulo();
+	
+	List<Produto> findByIdIn(List<Integer> ids);
 }

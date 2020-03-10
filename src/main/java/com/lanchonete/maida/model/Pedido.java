@@ -18,6 +18,9 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -50,9 +53,11 @@ public class Pedido {
 	private StatusPedido status;
 
 	@OneToMany
+	@Cascade(CascadeType.ALL)
 	private List<ItemPedido> itensPedido;
 
 	@OneToMany
+	@Cascade(CascadeType.ALL)
 	private List<MensagemPedido> mensagens;
 
 	@PrePersist

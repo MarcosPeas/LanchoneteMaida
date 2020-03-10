@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.lanchonete.maida.exceptions.ResourceNotFoundException;
 import com.lanchonete.maida.model.Produto;
 import com.lanchonete.maida.model.Produto.ProdutoTipo;
 import com.lanchonete.maida.repository.ProdutoRepository;
@@ -23,8 +24,17 @@ public class ProdutoDao implements IProdutoService {
 	}
 
 	@Override
-	public Optional<Produto> buscarPorId(int id) {
-		return rep.findById(id);
+	public Produto buscarPorId(int id) {
+		Optional<Produto> optional = rep.findById(id);
+		if (optional.isEmpty()) {
+			throw new ResourceNotFoundException("produto não encontrado");
+		}
+		return optional.get();
+	}
+
+	@Override
+	public List<Produto> buscarPorIds(List<Integer> ids) {
+		return rep.findByIdIn(ids);
 	}
 
 	@Override
@@ -38,18 +48,27 @@ public class ProdutoDao implements IProdutoService {
 	}
 
 	@Override
+	public List<Produto> listarPorIds(List<Integer> ids) {
+		return rep.findByIdIn(ids);
+	}
+
+	@Override
 	public List<Produto> listarPorCategoria(Produto.ProdutoTipo tipo) {
 		return rep.findBytipoOrderByTitulo(tipo);
 	}
 
 	@Override
 	public void deletar(int id) {
-		rep.deleteById(id);
+		rep.delete(buscarPorId(id));
 	}
 
 	@Override
-	public Optional<Produto> clienteBuscarPorId(int id) {
-		return rep.findByIdAndDisponivelTrue(id);
+	public Produto clienteBuscarPorId(int id) {
+		Optional<Produto> optional = rep.findByIdAndDisponivelTrue(id);
+		if (optional.isEmpty()) {
+			throw new ResourceNotFoundException("produto não encontrado");
+		}
+		return optional.get();
 	}
 
 	@Override

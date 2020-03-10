@@ -1,9 +1,6 @@
 package com.lanchonete.maida.controller;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -15,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.lanchonete.maida.email.EmailUtil;
 import com.lanchonete.maida.email.SenhaModel;
+import com.lanchonete.maida.exceptions.ConstraintViolationImpl;
 import com.lanchonete.maida.model.Usuario;
 import com.lanchonete.maida.response.Response;
 import com.lanchonete.maida.security.JwtTokenUtil;
@@ -35,47 +33,28 @@ public class SenhaController {
 
 	@PostMapping(value = "/recuperar")
 	public ResponseEntity<Response<Void>> sendMail(@RequestParam String email) {
-		Optional<Usuario> optional = usuarioService.buscarPorEmail(email);
-
-		if (optional.isEmpty()) {
-			ResponseEntity<Response<Void>> responseEntity = new ResponseEntity<Response<Void>>(
-					Response.erros("E-mail não encontrado"), HttpStatus.NOT_FOUND);
-			return responseEntity;
-		}
-
-		try {
-			String token = tokenUtil.gerarTokenDeRecuperacaoDeSenha(email);
-			SimpleMailMessage message = EmailUtil.templete(optional.get(), token);
-			mailSender.send(message);
-			return ResponseEntity.ok().build();
-		} catch (Exception e) {
-			e.printStackTrace();
-			// return "Erro ao enviar email.";
-			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).build();
-		}
+		Usuario usuario = usuarioService.buscarPorEmail(email);
+		String token = tokenUtil.gerarTokenDeRecuperacaoDeSenha(email);
+		SimpleMailMessage message = EmailUtil.templete(usuario, token);
+		mailSender.send(message);
+		return ResponseEntity.ok().build();
 	}
 
 	@PatchMapping
 	public ResponseEntity<Response<Object>> alterarSenha(@RequestBody SenhaModel senhaModel) {
 
 		if (senhaModel == null || senhaModel.getSenha1() == null || senhaModel.getSenha2() == null) {
-			return ResponseEntity.badRequest().body(Response.erros("Informe a senha e a sua repetição"));
+			throw ConstraintViolationImpl.of("Erro ao trocar senha", "Informe a senha e a sua repetição", senhaModel)
+			.getViolationException();
 		}
 
 		if (!senhaModel.getSenha1().equals(senhaModel.getSenha2())) {
-			return ResponseEntity.badRequest().body(Response.erros("A senha e a repetição da senha não são iguais"));
+			throw ConstraintViolationImpl.of("Erro ao trocar senha", "A senha e a repetição da senha não são iguais", senhaModel)
+			.getViolationException();
 		}
 		if (tokenUtil.tokenValido(senhaModel.getToken())) {
 			String email = tokenUtil.pegarEmailDoToken(senhaModel.getToken());
-			System.out.println(email);
-			Optional<Usuario> optional = usuarioService.buscarPorEmail(email);
-			if (optional.isEmpty()) {
-				Response<Object> response = Response.erros("Usuário não encontrado");
-				ResponseEntity<Response<Object>> responseEntity = new ResponseEntity<Response<Object>>(response,
-						HttpStatus.NOT_FOUND);
-				return responseEntity;
-			}
-			Usuario usuario = optional.get();
+			Usuario usuario = usuarioService.buscarPorEmail(email);
 			usuario.setSenha(SenhaUtil.encriptarSenha(senhaModel.getSenha1()));
 			usuarioService.salvar(usuario);
 			return ResponseEntity.ok().body(Response.of(null));

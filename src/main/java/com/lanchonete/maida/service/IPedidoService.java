@@ -2,7 +2,6 @@ package com.lanchonete.maida.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import com.lanchonete.maida.model.Pedido;
 import com.lanchonete.maida.model.Pedido.StatusPedido;
@@ -13,9 +12,9 @@ public interface IPedidoService {
 
 	Pedido alterarStatus(Pedido pedido);
 
-	Optional<Pedido> buscarPorId(int id);
+	Pedido buscarPorId(int id);
 
-	Optional<Pedido> buscarPorIdECliente(int id, int idCliente);
+	Pedido buscarPorIdECliente(int id, int idCliente);
 
 	List<Pedido> buscarPorStatus(Pedido.StatusPedido status);
 
@@ -32,4 +31,6 @@ public interface IPedidoService {
 	List<Pedido> buscarEntreDatas(LocalDateTime inicio, LocalDateTime fim, List<StatusPedido> statusList);
 
 	void deletar(int id);
+
+	Pedido alterar(Pedido pedido);
 }

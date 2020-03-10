@@ -1,7 +1,6 @@
 package com.lanchonete.maida.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.lanchonete.maida.model.MensagemPedido;
 import com.lanchonete.maida.model.Pedido;
@@ -9,8 +8,10 @@ import com.lanchonete.maida.model.Pedido;
 public interface IMensagemPedidoService {
 
 	MensagemPedido salvar(MensagemPedido mensagem);
+	
+	MensagemPedido alterar(MensagemPedido mensagem);
 
-	Optional<MensagemPedido> buscarPorId(int id);
+	MensagemPedido buscarPorId(int id);
 
 	List<MensagemPedido> listarPorPedido(Pedido pedido);
 

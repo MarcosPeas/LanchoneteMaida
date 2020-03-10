@@ -1,7 +1,6 @@
 package com.lanchonete.maida.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.lanchonete.maida.model.Produto;
 
@@ -9,7 +8,7 @@ public interface IProdutoService {
 
 	Produto salvar(Produto produto);
 
-	Optional<Produto> buscarPorId(int id);
+	Produto buscarPorId(int id);
 
 	List<Produto> buscarPorParteNome(String parteNome);
 
@@ -17,7 +16,7 @@ public interface IProdutoService {
 
 	List<Produto> listarPorCategoria(Produto.ProdutoTipo tipo);
 
-	Optional<Produto> clienteBuscarPorId(int id);
+	Produto clienteBuscarPorId(int id);
 
 	List<Produto> clienteBuscarPorParteNome(String parteNome);
 
@@ -26,4 +25,8 @@ public interface IProdutoService {
 	List<Produto> clienteListarPorCategoria(Produto.ProdutoTipo tipo);
 
 	void deletar(int id);
+
+	List<Produto> listarPorIds(List<Integer> ids);
+
+	List<Produto> buscarPorIds(List<Integer> ids);
 }
