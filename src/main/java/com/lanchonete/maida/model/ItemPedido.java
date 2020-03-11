@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -33,7 +34,7 @@ public class ItemPedido {
 	private int id;
 	
 	@DecimalMin(value = "0.05", inclusive = true, message = "O valor unitário do item de um pedido não pode ser menor que R$ 0,05")
-	@DecimalMin(value = "10000.00", inclusive = true, message = "O valor unitário do item de um pedido não pode ser maior que R$ 10.000,00")
+	@DecimalMax(value = "10000.00", inclusive = true, message = "O valor unitário do item de um pedido não pode ser maior que R$ 10.000,00")
 	@NotNull(message = "Informe o valor unitário do item do pedido")
 	private BigDecimal valorUnitario;
 	
