@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
@@ -42,7 +43,7 @@ public class Pedido {
 	private LocalDateTime horarioPedido;
 	private LocalDateTime horarioAceito;
 	private LocalDateTime horarioEntregue;
-	
+
 	@NotNull(message = "O valor do pedido não pode ser nulo")
 	@DecimalMin(value = "0.05", inclusive = true, message = "Não é possível realizar um pedido com o valor menor que R$ 0,05")
 	private BigDecimal valor;
@@ -73,6 +74,15 @@ public class Pedido {
 	@PrePersist
 	private void definirHorarioPedido() {
 		horarioPedido = LocalDateTime.now();
+	}
+
+	@PreUpdate
+	private void definirHorarioAceitacaoOuFinalizacao() {
+		if (status == StatusPedido.RECEBIDO) {
+			horarioAceito = LocalDateTime.now();
+		} else if (status == StatusPedido.FINALIZADO) {
+			horarioEntregue = LocalDateTime.now();
+		}
 	}
 
 	public enum StatusPedido {

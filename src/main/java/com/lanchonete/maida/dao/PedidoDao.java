@@ -41,21 +41,22 @@ public class PedidoDao implements IPedidoService {
 		return optional.get();
 	}
 
-	/*@Override
-	public List<Pedido> buscarPorStatus(StatusPedido status) {
-		return rep.findByStatusOrderByHorarioPedidoDesc(status);
-	}*/
+	/*
+	 * @Override public List<Pedido> buscarPorStatus(StatusPedido status) { return
+	 * rep.findByStatusOrderByHorarioPedidoDesc(status); }
+	 */
 
 	@Override
 	public List<Pedido> buscarPorStatus(List<StatusPedido> status) {
 		return rep.findByStatusInOrderByHorarioPedidoDesc(status);
 	}
 
-	/*@Override
-	public List<Pedido> buscarPorClienteEStatus(int clientId, StatusPedido status) {
-		return rep.findByStatusAndClienteOrderByHorarioPedidoDesc(status,
-				new Usuario(clientId, null, null, null, null, null, null));
-	}*/
+	/*
+	 * @Override public List<Pedido> buscarPorClienteEStatus(int clientId,
+	 * StatusPedido status) { return
+	 * rep.findByStatusAndClienteOrderByHorarioPedidoDesc(status, new
+	 * Usuario(clientId, null, null, null, null, null, null)); }
+	 */
 
 	@Override
 	public List<Pedido> buscarPorClienteEStatus(int clientId, List<StatusPedido> status) {
@@ -93,31 +94,39 @@ public class PedidoDao implements IPedidoService {
 	}
 
 	@Override
-	public Pedido alterarStatus(Pedido pedido) {
-		Pedido pedidoA = buscarPorId(pedido.getId());
-		StatusPedido st = pedidoA.getStatus();
-		if (podeAlterarStatus(pedido.getStatus(), st)) {
+	public Pedido alterarStatus(int idPedido, Pedido.StatusPedido status) {
+		Pedido pedido = buscarPorId(idPedido);
+		pedido.setStatus(status);
+		return salvar(pedido);
+	}
+
+	@Override
+	public Pedido alterarStatusPedidoCliente(int idPedido, Pedido.StatusPedido status) {
+		Pedido pedido = buscarPorId(idPedido);
+		if (podeAlterarStatus(status, pedido.getStatus())) {
+			pedido.setStatus(status);
 			return salvar(pedido);
 		}
 		String message = "Não é possível alterar os status do pedido";
-		String temMessage = "messageTemplete";
+		String temMessage = "Não é possível alterar os status do pedido";
 		throw ConstraintViolationImpl.of(message, temMessage, pedido).getViolationException();
 	}
 
 	@Override
 	public Pedido buscarPorIdECliente(int id, int idCliente) {
-		 Optional<Pedido> optional = rep.findByIdAndCliente(id, new Usuario(idCliente, null, null, null, null, null, null));
-		 if(optional.isEmpty()) {
-			 throw new ResourceNotFoundException("pedido não encontrado");
-		 }
-		 return optional.get();
+		Optional<Pedido> optional = rep.findByIdAndCliente(id,
+				new Usuario(idCliente, null, null, null, null, null, null));
+		if (optional.isEmpty()) {
+			throw new ResourceNotFoundException("pedido não encontrado");
+		}
+		return optional.get();
 	}
 
 	@Override
 	public List<Pedido> buscarPedidosFila(List<StatusPedido> status, int idPedido) {
 		Pedido pedido = buscarPorId(idPedido);
-			return rep.findByStatusInAndHorarioPedidoLessThanEqualOrderByHorarioPedidoDesc(status,
-					pedido.getHorarioPedido());
+		return rep.findByStatusInAndHorarioPedidoLessThanEqualOrderByHorarioPedidoDesc(status,
+				pedido.getHorarioPedido());
 	}
 
 	@Override
@@ -143,4 +152,5 @@ public class PedidoDao implements IPedidoService {
 		}
 		return false;
 	}
+
 }

@@ -10,7 +10,9 @@ public interface IPedidoService {
 
 	Pedido salvar(Pedido pedido);
 
-	Pedido alterarStatus(Pedido pedido);
+	Pedido alterarStatus(int idPedido, Pedido.StatusPedido status);
+	
+	Pedido alterarStatusPedidoCliente(int idPedido, Pedido.StatusPedido status);
 
 	Pedido buscarPorId(int id);
 
