@@ -127,7 +127,7 @@ public class JwtTokenUtil {
 	 * @return Date
 	 */
 	private Date gerarDataExpiracao(long p) {
-		return new Date(System.currentTimeMillis() + p * 1000);
+		return new Date(System.currentTimeMillis() + p * 1000 * 60);
 	}
 
 	/**

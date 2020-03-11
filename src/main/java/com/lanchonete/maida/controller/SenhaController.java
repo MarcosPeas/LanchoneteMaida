@@ -7,6 +7,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,7 +20,8 @@ import com.lanchonete.maida.security.JwtTokenUtil;
 import com.lanchonete.maida.service.IUsuarioService;
 import com.lanchonete.maida.util.SenhaUtil;
 
-@RestController("/v1/senha")
+@RestController
+@RequestMapping("/v1/senha")
 public class SenhaController {
 
 	@Autowired
@@ -31,7 +33,7 @@ public class SenhaController {
 	@Autowired
 	private JwtTokenUtil tokenUtil;
 
-	@PostMapping(value = "/recuperar")
+	@PostMapping
 	public ResponseEntity<Response<Void>> sendMail(@RequestParam String email) {
 		Usuario usuario = usuarioService.buscarPorEmail(email);
 		String token = tokenUtil.gerarTokenDeRecuperacaoDeSenha(email);
@@ -45,12 +47,13 @@ public class SenhaController {
 
 		if (senhaModel == null || senhaModel.getSenha1() == null || senhaModel.getSenha2() == null) {
 			throw ConstraintViolationImpl.of("Erro ao trocar senha", "Informe a senha e a sua repetição", senhaModel)
-			.getViolationException();
+					.getViolationException();
 		}
 
 		if (!senhaModel.getSenha1().equals(senhaModel.getSenha2())) {
-			throw ConstraintViolationImpl.of("Erro ao trocar senha", "A senha e a repetição da senha não são iguais", senhaModel)
-			.getViolationException();
+			throw ConstraintViolationImpl
+					.of("Erro ao trocar senha", "A senha e a repetição da senha não são iguais", senhaModel)
+					.getViolationException();
 		}
 		if (tokenUtil.tokenValido(senhaModel.getToken())) {
 			String email = tokenUtil.pegarEmailDoToken(senhaModel.getToken());
