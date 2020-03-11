@@ -70,6 +70,11 @@ public class PedidoDao implements IPedidoService {
 
 	@Override
 	public Pedido salvar(Pedido pedido) {
+		if (pedido.getItensPedido() == null || pedido.getItensPedido().isEmpty()) {
+			throw ConstraintViolationImpl
+					.of("Pedido não realizado", "Para fazer um pedido, é necessário adicionar produtos", pedido)
+					.getViolationException();
+		}
 		List<Integer> ids = pedido.getItensPedido().stream().map(new Function<ItemPedido, Integer>() {
 			@Override
 			public Integer apply(ItemPedido t) {
@@ -77,6 +82,16 @@ public class PedidoDao implements IPedidoService {
 			}
 		}).collect(Collectors.toList());
 		List<Produto> list = produtoService.buscarPorIds(ids);
+		if (list == null || list.isEmpty()) {
+			throw ConstraintViolationImpl
+					.of("Pedido não realizado", "Os produtos do seu pedido estão indiposníveis", pedido)
+					.getViolationException();
+		}
+		if (ids.size() != list.size()) {
+			throw ConstraintViolationImpl
+					.of("Pedido não realizado", "Alguns dos produtos estão indisponíveis", pedido)
+					.getViolationException();
+		}
 		list.forEach(p -> {
 			if (!p.isDisponivel()) {
 				throw ConstraintViolationImpl.of("Produto indisponível", p.getTitulo() + " está indiponível", p)
