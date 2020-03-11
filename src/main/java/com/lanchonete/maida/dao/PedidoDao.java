@@ -112,7 +112,7 @@ public class PedidoDao implements IPedidoService {
 	public Pedido alterarStatus(int idPedido, Pedido.StatusPedido status) {
 		Pedido pedido = buscarPorId(idPedido);
 		pedido.setStatus(status);
-		return salvar(pedido);
+		return rep.saveAndFlush(pedido);
 	}
 
 	@Override
@@ -120,7 +120,7 @@ public class PedidoDao implements IPedidoService {
 		Pedido pedido = buscarPorId(idPedido);
 		if (podeAlterarStatus(status, pedido.getStatus())) {
 			pedido.setStatus(status);
-			return salvar(pedido);
+			return rep.saveAndFlush(pedido);
 		}
 		String message = "Não é possível alterar os status do pedido";
 		String temMessage = "Não é possível alterar os status do pedido";

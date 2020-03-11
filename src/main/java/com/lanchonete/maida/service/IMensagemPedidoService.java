@@ -12,6 +12,8 @@ public interface IMensagemPedidoService {
 	MensagemPedido alterar(MensagemPedido mensagem);
 
 	MensagemPedido buscarPorId(int id);
+	
+	MensagemPedido buscarPorIdEPedido(int id, Pedido pedido);
 
 	List<MensagemPedido> listarPorPedido(Pedido pedido);
 

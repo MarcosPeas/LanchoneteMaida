@@ -48,4 +48,13 @@ public class MensagemPedidoDao implements IMensagemPedidoService {
 		return rep.saveAndFlush(mensagem);
 	}
 
+	@Override
+	public MensagemPedido buscarPorIdEPedido(int id, Pedido pedido) {
+		Optional<MensagemPedido> optional = rep.findByIdAndPedidoOrderByHorarioDesc(id, pedido);
+		if(optional.isEmpty()) {
+			throw new ResourceNotFoundException("mensagem não encontrada");
+		}
+		return optional.get();
+	}
+
 }

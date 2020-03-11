@@ -1,0 +1,2 @@
+ALTER TABLE `item_pedido` DROP FOREIGN KEY `FKtk55mn6d6bvl5h0no5uagi3sf`; 
+ALTER TABLE `item_pedido` ADD CONSTRAINT `FKtk55mn6d6bvl5h0no5uagi3sf` FOREIGN KEY (`produto_id`) REFERENCES `produto`(`id`) ON DELETE SET NULL ON UPDATE RESTRICT;

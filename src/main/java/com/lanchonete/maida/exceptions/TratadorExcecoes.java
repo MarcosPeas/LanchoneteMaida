@@ -101,4 +101,12 @@ public class TratadorExcecoes /* extends ResponseEntityExceptionHandler */ {
 				+ "\nPor segurança, não envie suas credenciais de e-mails para repositórios públicos");
 		return Response.erros("O provedor de e-mails falhou");
 	}
+	
+	
+	//NumberFormatException
+	@ExceptionHandler(NumberFormatException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public Response<Object> processarNumberFormatException(final NumberFormatException ex) {
+		return Response.erros("Verifique se está colocando texto em campos numéricos");
+	}
 }

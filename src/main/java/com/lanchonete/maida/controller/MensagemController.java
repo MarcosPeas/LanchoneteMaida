@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,29 +32,41 @@ public class MensagemController {
 	private IMensagemPedidoService mensagemDao;
 	
 	@PostMapping
+	@PreAuthorize("hasAnyRole('GESTOR')")
 	public ResponseEntity<Object> salvarMensagem(@PathVariable int pedidoId, @RequestBody MensagemPedido mensagem) {
 		Pedido pedido = pedidoDao.buscarPorId(pedidoId);
 		mensagem.setPedido(pedido);
 		MensagemPedido mensagemPedido = mensagemDao.salvar(mensagem);
 		pedido.getMensagens().add(mensagemPedido);
-		pedidoDao.salvar(pedido);
+		pedidoDao.alterar(pedido);
 		return ResponseEntity.status(HttpStatus.CREATED).body(Response.of(mensagemPedido.getId()));
 	}
 
 	@PutMapping
+	@PreAuthorize("hasAnyRole('GESTOR')")
 	public ResponseEntity<?> alterarMensagem(@PathVariable int pedidoId, @RequestBody MensagemPedido mensagem) {
+		Pedido pedido = pedidoDao.buscarPorId(pedidoId);
+		mensagem.setPedido(pedido);
 		mensagemDao.salvar(mensagem);
 		return ResponseEntity.ok().build();
 	}
 
 	@GetMapping
-	public ResponseEntity<Object> listarMensagem(@PathVariable int pedidoId) {
+	public ResponseEntity<?> listarMensagem(@PathVariable int pedidoId) {
 		Pedido pedido = pedidoDao.buscarPorId(pedidoId);
 		List<MensagemPedido> mensagens = mensagemDao.listarPorPedido(pedido);
-		return ResponseEntity.ok(mensagens);
+		return ResponseEntity.ok(Response.of(mensagens));
+	}
+	
+	@GetMapping(value = "/{idMensagem}")
+	public ResponseEntity<?> buscarPorId(@PathVariable int pedidoId, @PathVariable int idMensagem) {
+		Pedido pedido = pedidoDao.buscarPorId(pedidoId);
+		MensagemPedido mensagem = mensagemDao.buscarPorIdEPedido(idMensagem, pedido);
+		return ResponseEntity.ok(Response.of(mensagem));
 	}
 
 	@DeleteMapping(value = "/{idMensagem}")
+	@PreAuthorize("hasAnyRole('GESTOR')")
 	public ResponseEntity<Object> deletarMensagem(@PathVariable int pedidoId, @PathVariable int idMensagem) {
 		mensagemDao.deletar(idMensagem);
 		return ResponseEntity.ok().build();
