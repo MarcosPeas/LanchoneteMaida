@@ -10,23 +10,42 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.firewall.RequestRejectedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.lanchonete.maida.controller.AuthController;
 import com.lanchonete.maida.response.Response;
 
 @RestControllerAdvice
-public class TratadorExcecoes /* extends ResponseEntityExceptionHandler */ {
-
+public class TratadorExcecoes extends ResponseEntityExceptionHandler {
 
 	private static final Logger log = LoggerFactory.getLogger(AuthController.class);
-	
+
+	@Override
+	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.body(Response.erros("Verifique se os dados estão no formato correto"));
+	}
+
+	@Override
+	protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Response.erros("Método não permitido"));
+	}
+
+	// ConstraintViolationException
 	@ExceptionHandler(ConstraintViolationException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public Response<Object> processarErrosValidacao(final ConstraintViolationException ex) {
@@ -38,12 +57,14 @@ public class TratadorExcecoes /* extends ResponseEntityExceptionHandler */ {
 		return response;
 	}
 
+	// ResourceNotFoundException
 	@ExceptionHandler(ResourceNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public Response<Object> processarErros404(final ResourceNotFoundException ex) {
 		return Response.erros(ex.getMessage());
 	}
 
+	// UsernameNotFoundException
 	@ExceptionHandler(UsernameNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public Response<Object> processarUsernameNotFoundException(final UsernameNotFoundException ex) {
@@ -59,11 +80,14 @@ public class TratadorExcecoes /* extends ResponseEntityExceptionHandler */ {
 	}
 
 	// DateTimeParseException
-	@ExceptionHandler(HttpMessageNotReadableException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public Response<Object> processarHttpMessageNotReadableException(final HttpMessageNotReadableException ex) {
-		return Response.erros("Verifique se os dados estão no formato correto");
-	}
+	/*
+	 * @ExceptionHandler(HttpMessageNotReadableException.class)
+	 * 
+	 * @ResponseStatus(HttpStatus.BAD_REQUEST) public Response<Object>
+	 * processarHttpMessageNotReadableException(final
+	 * HttpMessageNotReadableException ex) { return
+	 * Response.erros("Verifique se os dados estão no formato correto"); }
+	 */
 
 	// SQLIntegrityConstraintViolationException
 	@ExceptionHandler(DataIntegrityViolationException.class)
@@ -87,13 +111,14 @@ public class TratadorExcecoes /* extends ResponseEntityExceptionHandler */ {
 		return Response.erros("Erro de integridade do banco");
 	}
 
+	// ConversionFailedException
 	@ExceptionHandler(ConversionFailedException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public Response<Object> processarConversionFailedException(final ConversionFailedException ex) {
 		return Response.erros("Erro ao converter dado");
 	}
-	
-	//AuthenticationFailedException
+
+	// AuthenticationFailedException
 	@ExceptionHandler(AuthenticationFailedException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public Response<Object> processarAuthenticationFailedException(final AuthenticationFailedException ex) {
@@ -101,12 +126,19 @@ public class TratadorExcecoes /* extends ResponseEntityExceptionHandler */ {
 				+ "\nPor segurança, não envie suas credenciais de e-mails para repositórios públicos");
 		return Response.erros("O provedor de e-mails falhou");
 	}
-	
-	
-	//NumberFormatException
+
+	// NumberFormatException
 	@ExceptionHandler(NumberFormatException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public Response<Object> processarNumberFormatException(final NumberFormatException ex) {
 		return Response.erros("Verifique se está colocando texto em campos numéricos");
+	}
+	
+	
+	// RequestRejectedException
+	@ExceptionHandler(RequestRejectedException.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	public Response<Object> processarRequestRejectedException(final RequestRejectedException ex) {
+		return Response.erros("Ocorreu um erro no servido :(");
 	}
 }

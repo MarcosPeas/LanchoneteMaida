@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,12 +22,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.lanchonete.maida.exceptions.ConstraintViolationImpl;
 import com.lanchonete.maida.model.Usuario;
 import com.lanchonete.maida.model.UsuarioToken;
 import com.lanchonete.maida.response.Response;
 import com.lanchonete.maida.security.JwtTokenUtil;
-import com.lanchonete.maida.security.JwtUsuario;
 import com.lanchonete.maida.security.TokenDto;
 import com.lanchonete.maida.service.IUsuarioService;
 import com.lanchonete.maida.util.SenhaUtil;
@@ -54,31 +51,7 @@ public class AuthController {
 	@Autowired
 	private IUsuarioService service;
 
-	@PostMapping(value = "/cadastro")
-	public ResponseEntity<Response<UsuarioToken>> cadastrar(@RequestBody Usuario usuario) {
-
-		if (usuario.getPerfil() == Usuario.Perfil.ROLE_GESTOR) {
-			String m = "Erro ao cadastrar usuário";
-			String mT = "Não é possível cadastrar gestores";
-			throw ConstraintViolationImpl.of(m, mT, usuario).getViolationException();
-		}
-		if(usuario.getSenha() == null) {
-			String m = "Erro ao cadastrar usuário";
-			String mT = "Informe a senha";
-			throw ConstraintViolationImpl.of(m, mT, usuario).getViolationException();
-		}
-		if(usuario.getSenha().length() < 6 || usuario.getSenha().length() > 16) {
-			String m = "Erro ao cadastrar usuário";
-			String mT = "A senha deve conter de 6 a 16 caracteres";
-			throw ConstraintViolationImpl.of(m, mT, usuario).getViolationException();
-		}
-
-		service.salvar(usuario);
-		JwtUsuario jwtUsuario = new JwtUsuario(usuario);
-		String token = jwtTokenUtil.obterToken(jwtUsuario);
-		Response<UsuarioToken> response = Response.of(new UsuarioToken(token, usuario));
-		return new ResponseEntity<Response<UsuarioToken>>(response, HttpStatus.CREATED);
-	}
+	
 
 	/**
 	 * Gera e retorna um novo token JWT.

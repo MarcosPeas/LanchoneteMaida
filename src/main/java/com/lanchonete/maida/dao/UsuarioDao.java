@@ -50,7 +50,12 @@ public class UsuarioDao implements IUsuarioService {
 
 	@Override
 	public void deletar(int id) {
-		repository.delete(buscarPorId(id));
+		Usuario usuario = buscarPorId(id);
+		if (usuario.getPerfil() == Perfil.ROLE_GESTOR) {
+			throw ConstraintViolationImpl.of("Operação negada", "Não é possível remover o gestor", usuario)
+					.getViolationException();
+		}
+		repository.delete(usuario);
 	}
 
 	@Override
