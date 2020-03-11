@@ -11,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -28,8 +31,18 @@ public class ItemPedido {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	
+	@DecimalMin(value = "0.05", inclusive = true, message = "O valor unitário do item de um pedido não pode ser menor que R$ 0,05")
+	@DecimalMin(value = "10000.00", inclusive = true, message = "O valor unitário do item de um pedido não pode ser maior que R$ 10.000,00")
+	@NotNull(message = "Informe o valor unitário do item do pedido")
 	private BigDecimal valorUnitario;
+	
+	@Min(value = 1, message = "A quantidade de itens deve ser no mínimo 1")
+	@NotNull(message = "Informe a quantidade de itens do pedido")
 	private int quantidade;
+	
+	@NotNull(message = "Informe o valor total do item do pedido")
+	@DecimalMin(value = "0.05", inclusive = true, message = "O valor total do item de um pedido não pode ser menor que R$ 0,05")
 	private BigDecimal valorTotal;
 
 	@ManyToOne

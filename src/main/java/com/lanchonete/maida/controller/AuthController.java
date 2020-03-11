@@ -62,6 +62,16 @@ public class AuthController {
 			String mT = "Não é possível cadastrar gestores";
 			throw ConstraintViolationImpl.of(m, mT, usuario).getViolationException();
 		}
+		if(usuario.getSenha() == null) {
+			String m = "Erro ao cadastrar usuário";
+			String mT = "Informe a senha";
+			throw ConstraintViolationImpl.of(m, mT, usuario).getViolationException();
+		}
+		if(usuario.getSenha().length() < 6 || usuario.getSenha().length() > 16) {
+			String m = "Erro ao cadastrar usuário";
+			String mT = "A senha deve conter de 6 a 16 caracteres";
+			throw ConstraintViolationImpl.of(m, mT, usuario).getViolationException();
+		}
 
 		service.salvar(usuario);
 		JwtUsuario jwtUsuario = new JwtUsuario(usuario);

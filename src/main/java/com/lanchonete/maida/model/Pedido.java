@@ -17,8 +17,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -40,9 +42,13 @@ public class Pedido {
 	private LocalDateTime horarioPedido;
 	private LocalDateTime horarioAceito;
 	private LocalDateTime horarioEntregue;
+	
+	@NotNull(message = "O valor do pedido não pode ser nulo")
+	@DecimalMin(value = "0.05", inclusive = true, message = "Não é possível realizar um pedido com o valor menor que R$ 0,05")
 	private BigDecimal valor;
 
 	@NotBlank(message = "Informe a forma de pagamento")
+	@Size(max = 30, message = "A forma de pagamento não pode conter mais que 30 caracteres")
 	private String formaPagamento;
 
 	@ManyToOne

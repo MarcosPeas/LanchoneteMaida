@@ -12,7 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -20,13 +21,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Table(name = "mensagem_pedido")
 @Getter
 @Setter
-@ToString(onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class MensagemPedido {
@@ -35,11 +34,14 @@ public class MensagemPedido {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@NotBlank(message = "O título não pode ser nulo")
+	@NotNull(message = "O título da mensagem não pode ser nulo")
+	@Size(min = 3, max = 30, message = "O título da mensagem deve conter de 3 a 30 caracteres")
 	private String titulo;
 
-	@NotBlank(message = "O texto da mensagem não pode ser nula")
+	@NotNull(message = "O texto da mensagem não pode ser nulo")
+	@Size(min = 3, max = 255, message = "O texto da mensagem deve conter de 3 a 255 caracteres")
 	private String texto;
+
 	private LocalDateTime horario;
 
 	@PrePersist
@@ -52,5 +54,5 @@ public class MensagemPedido {
 	@Basic(fetch = FetchType.LAZY)
 	@JsonIgnore
 	private Pedido pedido;
-	
+
 }

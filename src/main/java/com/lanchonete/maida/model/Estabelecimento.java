@@ -8,6 +8,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,8 +24,9 @@ public class Estabelecimento {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	
+
 	@NotBlank(message = "Informe o nome do estabelecimento")
+	@Size(min = 5, max = 30, message = "O nome do estabelecimento deve conter de 5 a 30 caracteres")
 	private String nome;
 
 	@OneToOne

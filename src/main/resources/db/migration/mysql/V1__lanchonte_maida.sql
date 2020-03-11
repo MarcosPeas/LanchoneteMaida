@@ -120,7 +120,7 @@ CREATE TABLE `produto` (
 CREATE TABLE `usuario` (
   `id` int(11) NOT NULL,
   `data_nascimento` date DEFAULT NULL,
-  `email` varchar(22) NOT NULL,
+  `email` varchar(50) NOT NULL,
   `nome` varchar(80) DEFAULT NULL,
   `perfil` varchar(16) DEFAULT NULL,
   `senha` varchar(255) DEFAULT NULL,
