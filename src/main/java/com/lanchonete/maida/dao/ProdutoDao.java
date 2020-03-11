@@ -54,13 +54,15 @@ public class ProdutoDao implements IProdutoService {
 
 	@Override
 	public List<Produto> listarPorCategoria(Produto.ProdutoTipo tipo) {
-		return rep.findBytipoOrderByTitulo(tipo);
+		return rep.findByTipoOrderByTitulo(tipo);
 	}
 
 	@Override
 	public void deletar(int id) {
 		rep.delete(buscarPorId(id));
 	}
+	
+	//			PARA CLIENTES
 
 	@Override
 	public Produto clienteBuscarPorId(int id) {
@@ -83,7 +85,7 @@ public class ProdutoDao implements IProdutoService {
 
 	@Override
 	public List<Produto> clienteListarPorCategoria(ProdutoTipo tipo) {
-		return rep.findBytipoAndDisponivelTrueOrderByTitulo(tipo);
+		return rep.findByTipoAndDisponivelTrueOrderByTitulo(tipo);
 	}
 
 }

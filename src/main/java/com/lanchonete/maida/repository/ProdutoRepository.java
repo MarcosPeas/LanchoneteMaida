@@ -11,7 +11,7 @@ public interface ProdutoRepository extends JpaRepository<Produto, Integer> {
 
 	List<Produto> findByTituloContainingOrderByTitulo(String nomeParte);
 
-	List<Produto> findBytipoOrderByTitulo(Produto.ProdutoTipo tipo);
+	List<Produto> findByTipoOrderByTitulo(Produto.ProdutoTipo tipo);
 
 	List<Produto> findByOrderByTitulo();
 
@@ -19,7 +19,7 @@ public interface ProdutoRepository extends JpaRepository<Produto, Integer> {
 
 	List<Produto> findByTituloContainingAndDisponivelTrueOrderByTitulo(String nomeParte);
 
-	List<Produto> findBytipoAndDisponivelTrueOrderByTitulo(Produto.ProdutoTipo tipo);
+	List<Produto> findByTipoAndDisponivelTrueOrderByTitulo(Produto.ProdutoTipo tipo);
 
 	List<Produto> findByDisponivelTrueOrderByTitulo();
 	

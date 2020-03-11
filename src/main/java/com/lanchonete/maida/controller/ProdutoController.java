@@ -62,7 +62,14 @@ public class ProdutoController {
 		return Response.of(dao.buscarPorParteNome(nome));
 	}
 
-	// PARA CLIENTES
+	@GetMapping(value = "/gestor/categoria/{tipo}")
+	@PreAuthorize("hasAnyRole('GESTOR')")
+	public ResponseEntity<Response<Object>> buscarPorTipo(@PathVariable Produto.ProdutoTipo tipo) {
+		return ResponseEntity.ok(Response.of(dao.listarPorCategoria(tipo)));
+	}
+	
+	
+	// 			PARA CLIENTES
 
 	@GetMapping(value = "/like/{nome}")
 	public Response<List<Produto>> clienteBuscarPorParteNome(@PathVariable String nome) {
@@ -79,5 +86,5 @@ public class ProdutoController {
 	public ResponseEntity<Response<Object>> clienteBuscarPorTipo(@PathVariable Produto.ProdutoTipo tipo) {
 		return ResponseEntity.ok(Response.of(dao.clienteListarPorCategoria(tipo)));
 	}
-
+	
 }
