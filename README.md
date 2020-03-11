@@ -33,6 +33,9 @@ O projeto se enquadra nos requisitos que seguem:
 * Cancelar Pedido: O cliente poderá também cancelar o pedido enquanto ele não estiver sendo preparado
 * O gestor poderá escrever mensagens informativas nos pedidos, alterar as mensagens ou remover as mensagens. O cliente poderá ver as mensagens cadastradas pelo gestor. O cliente só poderá ver as mensagens vinculadas a seus pedidos.
 
+### Diagrama Entidade e Relacionamento
+Para melhor visualizar a disposição dos dados da nossa API, segue o Diagrama Entidade e Relacionamento
+![image](https://drive.google.com/uc?export=view&id=1lhctVFCC9RZGUWsCrdr4N7IgVHImHL6s)
 
 ### Setup do projeto
 
