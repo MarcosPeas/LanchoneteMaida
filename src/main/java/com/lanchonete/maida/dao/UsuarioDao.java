@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.lanchonete.maida.exceptions.ConstraintViolationImpl;
@@ -24,7 +23,7 @@ public class UsuarioDao implements IUsuarioService {
 	public Usuario buscarPorEmail(String email) {
 		Optional<Usuario> optional = repository.findByEmail(email);
 		if (optional.isEmpty()) {
-			throw new UsernameNotFoundException("Usuário não encontrado");
+			throw new ResourceNotFoundException("Usuário não encontrado");
 		}
 		return optional.get();
 	}

@@ -46,11 +46,9 @@ Para melhor visualizar a disposição dos dados da nossa API, segue o Diagrama E
 * Crie um banco de dados utilizando o MySQL com o nome lanchonete_maida
 * Dentro do projeto, configure a conexão com o banco de dados no arquivo application.properties
 * Inicie o banco de dados
-* Para o envio de e-mails, coloquei seu e-mail e senha do Google nas configurações de e-mail no arquivo application.properties (NÃO ENVIE SEUS DADOS DE E-MAIL PARA REPOSITÓRIOS PÚBLICOS). O Google bloqueia o acesso à conta do Google a aplicativos menos seguros, para este projeto funcionar corretamente, permita o acesso à conta do Google a aplicativos menos seguros aqui https://myaccount.google.com/lesssecureapps 
-* Edite os dados iniciais da lanchonete na linha 27 do arquivo V1__lanchonete_maida.sql no caminho resource/db/migration/mysql
-* Edite o nome, e-mail e data de nascimento do gestor do sistema na linha 134 do arquivo V1__lanchonete_maida.sql no caminho resource/db/migration/mysql. Não altere a senha, pois já está encriptada. A senha é 123456. 
-* Caso o SwaggerUI não funcione, o token utilizado por ele pode ter expirado. Para obter um token válido para o Swagger e que dure bastante tempo, aumente a validade dos tokens no arquivo application.properties, linha 15 e inicie o projeto. Com o Postman, acesse http://localhost:8080/v1/auth, faça login com os dados do gestor cadastrado, copiei o token gerado e coloque como valor da variável swaggerToken na classe com.lanchonete.maida.swagger.SwaggerConfig. Retorne no arquivo application.properties e defina o tempo de expiração do token como originalmente ou a seu gosto.
-* Reinicie o projeto e acesse acesse http://localhost:8080/swagger-ui.html para testar a API.
+* Para o envio de e-mails, coloque seu e-mail e senha do Google nas configurações de e-mail no arquivo application.properties (NÃO ENVIE SEUS DADOS DE E-MAIL PARA REPOSITÓRIOS PÚBLICOS). O Google bloqueia o acesso à conta do Google a aplicativos menos seguros, para este projeto funcionar corretamente, permita o acesso à conta do Google a aplicativos menos seguros aqui https://myaccount.google.com/lesssecureapps 
+* Inicie a aplicação e teste em: http://localhost:8080/swagger-ui.html
+* Os dados do gestor. E-mail: peas.shadow@gmail.com, senha 1234
 
 ##### Outras informações
 A API está documentada com o Swagger. Utilize o SwaggerUi para ver os endpoits e testá-los.
