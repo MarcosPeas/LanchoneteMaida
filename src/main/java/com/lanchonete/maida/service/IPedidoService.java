@@ -35,4 +35,6 @@ public interface IPedidoService {
 	void deletar(int id);
 
 	Pedido alterar(Pedido pedido);
+	
+	boolean podeAlterarStatus(StatusPedido novo, StatusPedido antigo);
 }

@@ -154,7 +154,8 @@ public class PedidoDao implements IPedidoService {
 		return rep.findByHorarioEntregueBetweenAndStatusInOrderByHorarioEntregueDesc(inicio, fim, statusList);
 	}
 
-	private boolean podeAlterarStatus(StatusPedido novo, StatusPedido antigo) {
+	@Override
+	public boolean podeAlterarStatus(StatusPedido novo, StatusPedido antigo) {
 		// SOLICITADO, RECEBIDO, EM_PREPARO, RECUSADO, CANCELADO, EM_ENTREGA, FINALIZADO
 		if (novo == StatusPedido.CANCELADO) {
 			if (antigo == StatusPedido.SOLICITADO || antigo == StatusPedido.RECEBIDO
